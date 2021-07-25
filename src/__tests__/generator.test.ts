@@ -2,16 +2,16 @@ import { parse } from '@babel/parser';
 import { WhitespaceMarkerGenerator } from '../generator';
 
 describe('generator tests', () => {
-    const expectCodeEval = (code: string) => {
+    const expectCodeEval = async (code: string) => {
         const expected = eval(code);
         const gen = new WhitespaceMarkerGenerator(parse(code));
         const resultCode = gen.generate().code;
         const result = eval(resultCode);
-        expect(result).toEqual(expected);
+        expect(await result).toEqual(await expected);
     };
 
-    it('parses hello', () => {
-        expectCodeEval(
+    it('parses hello', async () => {
+        await expectCodeEval(
             `
 function hello() {
     return 1 + 1; // a comment
@@ -20,12 +20,12 @@ hello(); `
         );
     });
 
-    it('parses regex', () => {
-        expectCodeEval(` '123'.replace(/123/gi, '456'); `);
+    it('parses regex', async () => {
+        await expectCodeEval(` '123'.replace(/123/gi, '456'); `);
     });
 
-    it('parses async await', () => {
-        expectCodeEval(`
+    it('parses async await', async () => {
+        await expectCodeEval(`
 async function hello() {
     return await (1 + 1).toString();
 }
@@ -33,8 +33,8 @@ hello();
         `);
     });
 
-    it('parses multi line string', () => {
-        expectCodeEval(`
+    it('parses multi line string', async () => {
+        await expectCodeEval(`
 function hello() {
     return \`
     x
@@ -43,6 +43,15 @@ function hello() {
     \`
 }
 hello();
+        `);
+    });
+
+    it('parses anonymous fn', async () => {
+        await expectCodeEval(`
+const h = async () => {
+    await (async (n) => n + 1)(2)
+}
+h();
         `);
     });
 });

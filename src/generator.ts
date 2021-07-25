@@ -64,6 +64,9 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
         };
         const oldToken = g.token.bind(g);
         g.token = (str: string) => {
+            if (str === '=>') {
+                g._unbreakableSpace();
+            }
             oldToken(str);
             // instead of smushing tokens together, mark the in-between as allowing spaces
             g._optionalSpace();
