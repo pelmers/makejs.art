@@ -1,0 +1,27 @@
+{
+    "name": "code-reshaper",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "repository": "git@github.com:pelmers/code-reshaper.git",
+    "author": "Peter Elmers <peter.elmers@yahoo.com>",
+    "license": "MIT",
+    "scripts": {
+        "build": "webpack --config webpack.config.js",
+        "watch": "webpack watch --config webpack.config.js",
+        "format": "node_modules/.bin/prettier --ignore-path .gitignore --write '.'"
+    },
+    "devDependencies": {
+        "@babel/generator": "^7.14.8",
+        "@babel/parser": "^7.14.8",
+        "@types/jest": "^26.0.24",
+        "jest": "^27.0.6",
+        "prettier": "^2.2.1",
+        "ts-jest": "^27.0.4",
+        "ts-loader": "^9.1.1",
+        "tslint": "^6.1.3",
+        "tslint-loader": "^3.5.4",
+        "typescript": "^4.2.4",
+        "webpack": "^5.36.2",
+        "webpack-cli": "^4.6.0"
+    }
+}
