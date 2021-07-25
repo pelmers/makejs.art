@@ -71,4 +71,4 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
         return super.generate();
     }
 }
-// TODO also deal with typescript
+// TODO also deal with typescript(?)

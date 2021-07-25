@@ -51,11 +51,8 @@ function isUbn(t: TokenType): boolean {
     return 'space' in t && t.space === 'ubn';
 }
 
-// TODO obvious bug, can't put new line after 'return' because of implicit semicolons
-
 function parseTokens(code: string) {
     const tokens: TokenType[] = [];
-    // TODO this shit's broken
     for (const betweenBreaks of code.split(UNBREAKABLE_SPACE_MARKER)) {
         const betweenSpaces = betweenBreaks.split(SPACE_MARKER);
         for (const sp of betweenSpaces) {
@@ -68,7 +65,6 @@ function parseTokens(code: string) {
         }
         tokens.push({ space: 'ubn' });
     }
-    console.log(JSON.stringify(tokens));
     return tokens;
 }
 
@@ -103,7 +99,6 @@ function collapseTokens(tokens: TokenType[]) {
             reducedTokens.push(curToken);
         }
     }
-    console.log(JSON.stringify(reducedTokens));
     return reducedTokens;
 }
 
