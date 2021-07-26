@@ -4,23 +4,10 @@ import {
     UNBREAKABLE_SPACE_MARKER,
 } from './constants';
 
-// note a typical font's width:height is about 1:2
-
 // Compute the minimum length of the code by replacing all spaces
 // with a single space and optional spaces with no space.
-export function minCodeSize(code: string): number {
-    const spaces = new RegExp(SPACE_MARKER, 'g');
-    const optSpaces = new RegExp(OPTIONAL_SPACE_MARKER, 'g');
-    const ubnSpaces = new RegExp(UNBREAKABLE_SPACE_MARKER, 'g');
-    const nSpaces = (code.match(spaces) || []).length;
-    const nOptSpaces = (code.match(optSpaces) || []).length;
-    const nUbnSpaces = (code.match(ubnSpaces) || []).length;
-    return (
-        code.length -
-        nOptSpaces * OPTIONAL_SPACE_MARKER.length -
-        nSpaces * (SPACE_MARKER.length - 1) -
-        nUbnSpaces * (UNBREAKABLE_SPACE_MARKER.length - 1)
-    );
+export function minCodeSize(tokens: TokenType[]): number {
+    return tokens.map(toStr).reduce((prev, cur) => prev + cur.length, 0);
 }
 
 type SpaceType = 'opt' | 'req' | 'ubn';
@@ -36,9 +23,9 @@ function minWidth(t: TokenType): number {
     if ('text' in t) {
         return t.text.length;
     } else if (t.space === 'opt') {
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 function toStr(t: TokenType): string {
@@ -54,7 +41,7 @@ function isUbn(t: TokenType): boolean {
     return 'space' in t && t.space === 'ubn';
 }
 
-function parseTokens(code: string) {
+export function parseTokens(code: string) {
     const tokens: TokenType[] = [];
     for (const betweenBreaks of code.split(UNBREAKABLE_SPACE_MARKER)) {
         const betweenSpaces = betweenBreaks.split(SPACE_MARKER);
@@ -68,7 +55,7 @@ function parseTokens(code: string) {
         }
         tokens.push({ space: 'ubn' });
     }
-    return tokens;
+    return collapseTokens(tokens);
 }
 
 // Fold consecutive spaces to the strongest version
@@ -105,9 +92,8 @@ function collapseTokens(tokens: TokenType[]) {
     return reducedTokens;
 }
 
-export function reshape(code: string, shapeFunction: (row: number) => number): string {
+export function reshape(tokens: TokenType[], shapeFunction: (row: number) => number): string {
     // First split the code into tokens that we can join together
-    const tokens = collapseTokens(parseTokens(code));
     const lines: TokenType[][] = [[]];
     let currentLineWidth = 0;
     for (let i = 0; i < tokens.length; i++) {
@@ -119,12 +105,12 @@ export function reshape(code: string, shapeFunction: (row: number) => number): s
             lines[currentLineIndex].push(t);
             currentLineWidth += minWidth(t);
         } else {
-            // Otherwise, we're on a space and could break now
+            // Otherwise, we're on a (required or optional) space and could break now
             // to decide, we will look ahead to see if the next potential breakpoint
             // would exceed our line's target width
             let nextBreakpoint = 0;
             for (let j = i + 1; j < tokens.length; j++) {
-                if ('space' in tokens[j]) {
+                if ('space' in tokens[j] && !isUbn(tokens[j])) {
                     break;
                 }
                 nextBreakpoint += minWidth(tokens[j]);
@@ -141,5 +127,6 @@ export function reshape(code: string, shapeFunction: (row: number) => number): s
             }
         }
     }
+    // TODO insert whitespaces to justify each line to its target width
     return lines.map((line) => line.map(toStr).join('')).join('\n');
 }

@@ -30,6 +30,17 @@ const h = async () => {
 h();
         `,
     },
+    {
+        name: 'parses longer code',
+        code:
+            'let testfn;' +
+            `
+testfn = () => {
+    return [1, 2, 3, 4, 5, 6];
+};
+`.repeat(25) +
+            'testfn();',
+    },
 ];
 
 describe('test cases', () => {
