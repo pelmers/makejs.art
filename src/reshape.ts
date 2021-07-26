@@ -8,15 +8,18 @@ import {
 
 // Compute the minimum length of the code by replacing all spaces
 // with a single space and optional spaces with no space.
-function minCodeSize(code: string): number {
+export function minCodeSize(code: string): number {
     const spaces = new RegExp(SPACE_MARKER, 'g');
     const optSpaces = new RegExp(OPTIONAL_SPACE_MARKER, 'g');
+    const ubnSpaces = new RegExp(UNBREAKABLE_SPACE_MARKER, 'g');
     const nSpaces = (code.match(spaces) || []).length;
     const nOptSpaces = (code.match(optSpaces) || []).length;
+    const nUbnSpaces = (code.match(ubnSpaces) || []).length;
     return (
         code.length -
         nOptSpaces * OPTIONAL_SPACE_MARKER.length -
-        nSpaces * (SPACE_MARKER.length - 1)
+        nSpaces * (SPACE_MARKER.length - 1) -
+        nUbnSpaces * (UNBREAKABLE_SPACE_MARKER.length - 1)
     );
 }
 
