@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
         "outDir": "./dist/",
+        "strictNullChecks": true,
         "sourceMap": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "module": "es6",
-        "target": "es6",
-        "lib": ["es2017", "dom"],
+        "module": "commonjs",
+        "target": "es2015",
+        "lib": ["es2017"],
+        "declaration": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "exclude": ["src/**/*.test.ts"]
 }

@@ -1,4 +1,2 @@
-const $text = document.querySelector('#code-text');
-
-// TODO: on button click, reshape contents of $text
-// TODO: probably want to run input through babel to cleanup any too-fancy syntax
+export { reshape, minCodeSize, parseTokens } from './reshape';
+export { WhitespaceMarkerGenerator } from './generator';
