@@ -8,7 +8,7 @@ module.exports = {
 
     mode: process.env.BUILD_MODE || 'development',
     entry: {
-        demo: './demo/index.ts',
+        demo: './demo/index.tsx',
     },
 
     output: {
@@ -31,18 +31,11 @@ module.exports = {
                 test: /\.js$/,
                 use: 'source-map-loader',
             },
-            {
-                enforce: 'pre',
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: 'tslint-loader',
-            },
-
             /****************
              * LOADERS
              *****************/
             {
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 exclude: [/node_modules/],
                 use: 'ts-loader',
             },

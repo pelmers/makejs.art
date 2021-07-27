@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "jsx": "react",
         "outDir": "./dist/",
         "strictNullChecks": true,
         "sourceMap": true,
@@ -7,7 +8,7 @@
         "moduleResolution": "node",
         "module": "commonjs",
         "target": "es2015",
-        "lib": ["es2017"],
+        "lib": ["es2017", "dom"],
         "declaration": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true
