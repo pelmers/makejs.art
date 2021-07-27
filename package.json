@@ -6,9 +6,9 @@
     "author": "Peter Elmers <peter.elmers@yahoo.com>",
     "license": "MIT",
     "scripts": {
-        "build": "webpack --config webpack.config.js",
-        "watch": "webpack watch --config webpack.config.js",
-        "format": "node_modules/.bin/prettier --ignore-path .gitignore --write '.'"
+        "build": "tsc",
+        "prepublish": "yarn build",
+        "format": "prettier --ignore-path .gitignore --write '.'"
     },
     "devDependencies": {
         "@babel/generator": "^7.14.8",

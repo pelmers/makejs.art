@@ -73,6 +73,7 @@ function collapseTokens(tokens: TokenType[]) {
                 return 'opt';
             }
         }
+        throw new Error('unreachable statement');
     };
     const reducedTokens: TokenType[] = [];
     for (let i = 0; i < tokens.length; i++) {
