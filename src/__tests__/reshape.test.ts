@@ -10,11 +10,13 @@ describe('reshape tests', () => {
         const genCode = gen.generate().code;
         const genTokens = parseTokens(genCode);
         // target width of 0 forces as many line breaks as possible
-        const resultCode1 = reshape(genTokens, () => 0);
+        const resultCode1 = reshape(genTokens, () => 0).join('\n');
         const result1 = eval(resultCode1);
         expect(await result1).toEqual(await expected);
         // target width of infinite forces everything to one line
-        const resultCode2 = reshape(genTokens, () => Number.MAX_SAFE_INTEGER);
+        const resultCode2 = reshape(genTokens, () => Number.MAX_SAFE_INTEGER).join(
+            '\n'
+        );
         const result2 = eval(resultCode2);
         expect(await result2).toEqual(await expected);
     };

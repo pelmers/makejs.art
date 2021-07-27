@@ -6,5 +6,5 @@ export function square(code: string): string {
     const tokens = parseTokens(code);
     const codeSize = minCodeSize(tokens);
     const sideLength = DEFAULT_HEIGHT_WIDTH_RATIO * Math.sqrt(codeSize);
-    return reshape(tokens, () =>sideLength);
+    return reshape(tokens, () => sideLength).join('\n');
 }

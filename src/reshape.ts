@@ -92,7 +92,10 @@ function collapseTokens(tokens: TokenType[]) {
     return reducedTokens;
 }
 
-export function reshape(tokens: TokenType[], shapeFunction: (row: number) => number): string {
+export function reshape(
+    tokens: TokenType[],
+    shapeFunction: (row: number) => number
+): string[] {
     // First split the code into tokens that we can join together
     const lines: TokenType[][] = [[]];
     let currentLineWidth = 0;
@@ -127,6 +130,26 @@ export function reshape(tokens: TokenType[], shapeFunction: (row: number) => num
             }
         }
     }
-    // TODO insert whitespaces to justify each line to its target width
-    return lines.map((line) => line.map(toStr).join('')).join('\n');
+    // This portion inserts whitespaces to justify each line to its target width
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        // target value - current size, i.e. number of spaces we want to add
+        let difference = Math.round(shapeFunction(i) - minCodeSize(line));
+        // find indices in the line that are spaces
+        const spaceIndices = line
+            // (except last position because spaces at the end of a line aren't visible)
+            .slice(0, line.length - 1)
+            .map((t, idx) => ({ t, idx }))
+            .filter(({ t }) => 'space' in t)
+            .map(({ idx }) => idx);
+        // of course we can't enter the loop unless there are spaces on this line
+        while (spaceIndices.length > 0 && difference > 0) {
+            const idx = spaceIndices[Math.floor(spaceIndices.length * Math.random())];
+            // We've found the index to add space to, we can convert it to text because
+            // we no longer need to know that it was a space
+            line[idx] = { text: `${toStr(line[idx])} ` };
+            difference--;
+        }
+    }
+    return lines.map((line) => line.map(toStr).join(''));
 }
