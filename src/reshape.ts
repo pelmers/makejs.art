@@ -4,6 +4,8 @@ import {
     UNBREAKABLE_SPACE_MARKER,
 } from './constants';
 
+const MAX_LINE_WIDTH = Number.MAX_SAFE_INTEGER;
+
 // Compute the minimum length of the code by replacing all spaces
 // with a single space and optional spaces with no space.
 export function minCodeSize(tokens: TokenType[]): number {
@@ -97,10 +99,8 @@ export function reshape(
     tokens: TokenType[],
     shapeFunction: (row: number) => number
 ): string[] {
-    // You probably don't need more space than the total size of the code on one line
-    const maxLineWidth = minCodeSize(tokens) * 5;
     // Enforce a maximum on the line width, even if we get infinity or something from the fn
-    const shapeFn = (row: number) => Math.min(maxLineWidth, shapeFunction(row));
+    const shapeFn = (row: number) => Math.min(MAX_LINE_WIDTH, shapeFunction(row));
     // First split the code into tokens that we can join together
     const lines: TokenType[][] = [[]];
     let currentLineWidth = 0;
@@ -138,6 +138,11 @@ export function reshape(
     // This portion inserts whitespaces to justify each line to its target width
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
+        if (shapeFn(i) === MAX_LINE_WIDTH) {
+            // in this case we're putting everything on this line anyway,
+            // don't need to justify 2^53 times (probly not a good idea)
+            continue;
+        }
         // target value - current size, i.e. number of spaces we want to add
         let difference = Math.round(shapeFn(i) - minCodeSize(line));
         // find indices in the line that are spaces
