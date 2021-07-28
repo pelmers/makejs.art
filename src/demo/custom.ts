@@ -67,13 +67,17 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
     return { canvas: target, ctx: target.getContext('2d')! };
 }
 
-export async function drawCode(code: string, imageFileUri: string) {
-    const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
-    const tokens = parseTokens(genCode);
-    // TODO actually this is crap, i should find the best pixels in the image first, then resize?
-    // maybe have user click which areas to fill in?
-    const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / INTENSITY_CUTOFF;
-    const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
+// TODO actually this is crap, i should find the best pixels in the image first, then resize?
+// methods include:
+// semi-interactive: https://dahtah.github.io/imager/foreground_background.html
+// automated visual attention based: https://mmcheng.net/mftp/Papers/SaliencyTPAMI.pdf
+
+// Return consecutive indices (row * width + col) where code should be placed
+// How does it work?
+// First I convert every pixel to an intensity (for now just r + g + b)
+// Then I make a histogram and find the cutoff value above which there are image size * INTENSITY_CUTOFF pixels
+// Finally go through the image again and mark consecutive runs of such pixels
+function findCodeRegions(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): number[][] {
     // Build an intensity histogram so we can find the value that hits cutoff
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const histogram = new Array(INTENSITY_RANGE).fill(0);
@@ -90,7 +94,6 @@ export async function drawCode(code: string, imageFileUri: string) {
         accum += histogram[cutoffValue];
         cutoffValue--;
     }
-    console.log('got cutoff', cutoffValue);
     // compute 'runs' of pixels > cutoff in the image rows to use as line widths
     const runs: number[][] = [];
     for (let row = 0; row < canvas.height; row++) {
@@ -112,7 +115,16 @@ export async function drawCode(code: string, imageFileUri: string) {
             }
         }
     }
-    console.log('got runs');
+    return runs;
+}
+
+export async function drawCode(code: string, imageFileUri: string) {
+    const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
+    const tokens = parseTokens(genCode);
+    // maybe have user click which areas to fill in?
+    const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / INTENSITY_CUTOFF;
+    const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
+    const runs = findCodeRegions(canvas, ctx);
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;
@@ -134,7 +146,6 @@ export async function drawCode(code: string, imageFileUri: string) {
             codeSegments.push(' '.repeat(nextRunLength));
         }
     }
-    // for multiple runs in the same line, put spaces between them
     let result = '';
     let runIndex = 0;
     for (let row = 0; row < canvas.height; row++) {
@@ -145,6 +156,7 @@ export async function drawCode(code: string, imageFileUri: string) {
                 col += codeSegments[runIndex].length;
                 runIndex++;
             } else {
+                // for multiple runs in the same line, put spaces between them
                 result += ' ';
             }
         }
