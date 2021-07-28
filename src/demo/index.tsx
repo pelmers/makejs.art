@@ -42,7 +42,7 @@ class App extends React.Component<{}, State> {
         if (false) {
             throw new Error('Cannot continue unless image and code are provided');
         }
-        const {drawCode} = (await import('./custom'));
+        const { drawCode } = await import('./custom');
         try {
             await drawCode(codeInput!, imageFile!);
         } catch (e) {
