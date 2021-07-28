@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export const TEST_CASES = [
     {
         name: 'parses hello',
@@ -31,6 +34,28 @@ h();
         `,
     },
     {
+        name: 'parses string concat',
+        code: `
+    // wheel of fortune
+    let x, y, z, t, n, r, e;
+    [t, n, r, e] = [1, 2, 3, 4];
+    x = {};
+    x+="Q"+ +t+","+ +n+","+(y=+e)+","+(z=+r)
+    `,
+    },
+    {
+        name: 'parses binary and prefix postfix operators',
+        code: `
+        let h = (i) => {
+            let x = 3;
+            return i + ++x;
+        }
+        let m = 5;
+        h(- --m) + ++m;
+        m++ + +null;
+        `,
+    },
+    {
         name: 'parses longer code',
         code:
             'let testfn;' +
@@ -42,6 +67,17 @@ testfn = () => {
             'testfn();',
     },
 ];
+
+const fixturesPath = path.resolve(__dirname, 'fixtures');
+const fixtures = fs.readdirSync(fixturesPath);
+TEST_CASES.push(
+    ...fixtures.map((f) => {
+        return {
+            name: `parses ${f}`,
+            code: fs.readFileSync(path.resolve(fixturesPath, f)).toString(),
+        };
+    })
+);
 
 describe('test cases', () => {
     it('has an empty test', () => {

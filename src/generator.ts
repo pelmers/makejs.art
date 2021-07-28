@@ -20,25 +20,45 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
     generate() {
         // @ts-ignore directly accessing the library's code, see https://git.io/J8Xf9
         const g = this._generator;
-        // mess with paren state to make sure returns have parens after them
-        // https://stackoverflow.com/a/2846298
-        g.startTerminatorless = (isLabel: boolean) => {
-            if (isLabel) {
-                return null;
-            }
-            return (g._parenPushNewlineState = { printed: true });
-        };
         const oldWord = g.word.bind(g);
         g.word = (w: string) => {
             oldWord(w);
             if (
-                // TODO fix labeled break and continue
-                ['return', 'throw', 'yield', 'await'].includes(w)
+                [
+                    'return',
+                    'break',
+                    'continue',
+                    'async',
+                    'throw',
+                    'yield',
+                    'await',
+                ].includes(w)
             ) {
-                g.token('(');
-            }
-            if ('async' === w) {
                 g._unbreakableSpace();
+            }
+        };
+        const oldUnaryExpression = g.UnaryExpression.bind(g);
+        g.UnaryExpression = (node: Node) => {
+            if (
+                'operator' in node &&
+                (node.operator === '+' || node.operator === '-')
+            ) {
+                // Require a space before unary exp because the last symbol could have been a postfix op
+                g._space();
+            }
+            oldUnaryExpression(node);
+        };
+        const oldUpdateExpression = g.UpdateExpression.bind(g);
+        g.UpdateExpression = (node: Node) => {
+            let isPostfix = false;
+            if ('prefix' in node && node.prefix) {
+                g._space();
+            } else {
+                isPostfix = true;
+            }
+            oldUpdateExpression(node);
+            if (isPostfix) {
+                g._space();
             }
         };
         g.space = (force: boolean = false) => {

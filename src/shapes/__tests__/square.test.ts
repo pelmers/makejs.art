@@ -3,12 +3,11 @@ import { WhitespaceMarkerGenerator } from '../../generator';
 import { TEST_CASES } from '../../__tests__/testCases';
 import { square } from '../square';
 
-describe('reshape tests', () => {
+describe('square reshape tests', () => {
     const expectCodeEval = async (code: string) => {
         let expected = eval(code);
         const gen = new WhitespaceMarkerGenerator(parse(code));
         const genCode = gen.generate().code;
-        // target width of 0 forces as many line breaks as possible
         const resultCode1 = square(genCode);
         const result1 = eval(resultCode1);
         expect(await result1).toEqual(await expected);
