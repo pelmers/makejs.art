@@ -31,11 +31,11 @@ function escapeRegExp(text: string) {
 // site design example? https://ascii-generator.site/
 
 // TODO add as input to the fn
-const INTENSITY_CUTOFF = 0.3;
+const INTENSITY_CUTOFF = 0.25;
 // Intensity values are sum of r, g, b at each pixel
 const INTENSITY_RANGE = 1 + 255 * 3;
 // Resize images to be bigger than code width to accomodate imperfect fill
-const SIZE_BUFFER_RATIO = 1;
+const SIZE_BUFFER_RATIO = 0.9;
 
 // Load the given image uri to an invisible canvas and return the canvas and its 2d context
 // Also resize the picture to make its pixel count as close to targetSize as possible
@@ -176,3 +176,5 @@ export async function drawCode(code: string, imageFileUri: string) {
     // TODO: then put it out in an output text box
     console.log(eval(result));
 }
+
+// improvement idea: https://dahtah.github.io/imager/foreground_background.html#k-nearest-neighbour-approach

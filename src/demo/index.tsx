@@ -47,6 +47,7 @@ class App extends React.Component<{}, State> {
             await drawCode(codeInput!, imageFile!);
         } catch (e) {
             this.setState({ error: e.message });
+            console.error(e);
         }
     };
 
@@ -101,7 +102,7 @@ class App extends React.Component<{}, State> {
                         id="code-text"
                         aria-label="input field for javascript source code"
                         onChange={(e) => this.setState({ codeInput: e.target.value })}
-                        value={INITIAL_CODE_VALUE}
+                        value={this.state.codeInput}
                     ></textarea>
                     {imageArea}
                     {doIt}
