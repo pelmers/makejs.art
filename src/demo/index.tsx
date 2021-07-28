@@ -1,6 +1,5 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
-import { drawCode } from './custom';
 
 // Used for testing so I don't need to keep adding test values, publicly this is empty.
 const INITIAL_CODE_VALUE =
@@ -43,6 +42,7 @@ class App extends React.Component<{}, State> {
         if (false) {
             throw new Error('Cannot continue unless image and code are provided');
         }
+        const {drawCode} = (await import('./custom'));
         try {
             await drawCode(codeInput!, imageFile!);
         } catch (e) {
