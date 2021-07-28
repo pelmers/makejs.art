@@ -32,7 +32,8 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
         g.word = (w: string) => {
             oldWord(w);
             if (
-                ['continue', 'return', 'break', 'throw', 'yield', 'await'].includes(w)
+                // TODO fix labeled break and continue
+                ['return', 'throw', 'yield', 'await'].includes(w)
             ) {
                 g.token('(');
             }
