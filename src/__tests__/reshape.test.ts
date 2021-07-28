@@ -14,6 +14,7 @@ describe('reshape tests', () => {
         const result1 = eval(resultCode1);
         expect(await result1).toEqual(await expected);
         // target width of infinite forces everything to one line
+        // TODO fix oom on this next line
         const resultCode2 = reshape(genTokens, () => Number.MAX_SAFE_INTEGER).join(
             '\n'
         );

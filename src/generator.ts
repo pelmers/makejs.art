@@ -37,6 +37,30 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
                 g._unbreakableSpace();
             }
         };
+        const oldUnaryExpression = g.UnaryExpression.bind(g);
+        g.UnaryExpression = (node: Node) => {
+            if (
+                'operator' in node &&
+                (node.operator === '+' || node.operator === '-')
+            ) {
+                // Require a space before unary exp because the last symbol could have been a postfix op
+                g._space();
+            }
+            oldUnaryExpression(node);
+        };
+        const oldUpdateExpression = g.UpdateExpression.bind(g);
+        g.UpdateExpression = (node: Node) => {
+            let isPostfix = false;
+            if ('prefix' in node && node.prefix) {
+                g._space();
+            } else {
+                isPostfix = true;
+            }
+            oldUpdateExpression(node);
+            if (isPostfix) {
+                g._space();
+            }
+        };
         g.space = (force: boolean = false) => {
             if (
                 (g._buf.hasContent() && !g.endsWith(' ') && !g.endsWith('\n')) ||

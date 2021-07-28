@@ -53,7 +53,7 @@ h();
         let m = 5;
         h(- --m) + ++m;
         m++ + +null;
-        `
+        `,
     },
     {
         name: 'parses longer code',
