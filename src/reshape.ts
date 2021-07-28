@@ -97,13 +97,17 @@ export function reshape(
     tokens: TokenType[],
     shapeFunction: (row: number) => number
 ): string[] {
+    // You probably don't need more space than the total size of the code on one line
+    const maxLineWidth = minCodeSize(tokens) * 5;
+    // Enforce a maximum on the line width, even if we get infinity or something from the fn
+    const shapeFn = (row: number) => Math.min(maxLineWidth, shapeFunction(row));
     // First split the code into tokens that we can join together
     const lines: TokenType[][] = [[]];
     let currentLineWidth = 0;
     for (let i = 0; i < tokens.length; i++) {
         const t = tokens[i];
         const currentLineIndex = lines.length - 1;
-        const targetWidth = shapeFunction(currentLineIndex);
+        const targetWidth = shapeFn(currentLineIndex);
         // If the space is unbreakable or it's a token, we must continue this line
         if (currentLineWidth === 0 || isUbn(t) || 'text' in t) {
             lines[currentLineIndex].push(t);
@@ -135,7 +139,7 @@ export function reshape(
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         // target value - current size, i.e. number of spaces we want to add
-        let difference = Math.round(shapeFunction(i) - minCodeSize(line));
+        let difference = Math.round(shapeFn(i) - minCodeSize(line));
         // find indices in the line that are spaces
         const spaceIndices = line
             // (except last position because spaces at the end of a line aren't visible)
