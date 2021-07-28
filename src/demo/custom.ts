@@ -35,7 +35,7 @@ const INTENSITY_CUTOFF = 0.25;
 // Intensity values are sum of r, g, b at each pixel
 const INTENSITY_RANGE = 1 + 255 * 3;
 // Resize images to be bigger than code width to accomodate imperfect fill
-const SIZE_BUFFER_RATIO = 0.9;
+const SIZE_BUFFER_RATIO = 1;
 
 // Load the given image uri to an invisible canvas and return the canvas and its 2d context
 // Also resize the picture to make its pixel count as close to targetSize as possible
@@ -137,7 +137,6 @@ export async function drawCode(code: string, imageFileUri: string) {
             codeSegments.push(' '.repeat(nextRunLength));
         }
     }
-    // TODO: then put them back together in the original image's locations
     // for multiple runs in the same line, put spaces between them
     let result = '';
     let runIndex = 0;
@@ -149,25 +148,11 @@ export async function drawCode(code: string, imageFileUri: string) {
                 col += codeSegments[runIndex].length;
                 runIndex++;
             } else {
-                // If we have enough room before the next run or row, we can decorate this portion
-                // const nextRunIdx = Math.min(
-                //     runs[runIndex + 1][0],
-                //     canvas.width * (row + 1) - 1
-                // );
-                // const emptyRoom = nextRunIdx - i;
-                // if (emptyRoom > 5) {
-                //     result += `/*${'.'.repeat(emptyRoom - 4)}*/`;
-                //     // subtract 1 because col will increment by 1 in the for loop
-                //     col += emptyRoom - 1;
-                // } else {
-                //     result += ' ';
-                // }
                 result += ' ';
             }
         }
         result += '\n';
     }
-    result = result.replace(new RegExp(escapeRegExp('*//*'), 'g'), '    ');
     for (let i = runIndex; i < codeSegments.length; i++) {
         result += `\n${codeSegments[i]}`;
     }
