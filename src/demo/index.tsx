@@ -18,6 +18,8 @@ type State = {
     error?: string;
 };
 
+const customModule = import('./custom');
+
 class App extends React.Component<{}, State> {
     state = {
         result: undefined,
@@ -38,13 +40,12 @@ class App extends React.Component<{}, State> {
 
     handleSubmit = async () => {
         const { codeInput, imageFile } = this.state;
-        // if (codeInput == null || imageFile == null) {
-        if (false) {
+        if (codeInput == null || imageFile == null) {
             throw new Error('Cannot continue unless image and code are provided');
         }
-        const { drawCode } = await import('./custom');
+        const { drawCode } = await customModule;
         try {
-            await drawCode(codeInput!, imageFile!);
+            await drawCode(codeInput, imageFile!);
         } catch (e) {
             this.setState({ error: e.message });
             console.error(e);

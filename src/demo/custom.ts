@@ -31,11 +31,11 @@ function escapeRegExp(text: string) {
 // site design example? https://ascii-generator.site/
 
 // TODO add as input to the fn
-const INTENSITY_CUTOFF = 0.25;
+const INTENSITY_CUTOFF = 0.3;
 // Intensity values are sum of r, g, b at each pixel
 const INTENSITY_RANGE = 1 + 255 * 3;
-// Resize images to be bigger than code width to accomodate imperfect fill
-const SIZE_BUFFER_RATIO = 1;
+// Resize images to accomodate imperfect fill
+const SIZE_BUFFER_RATIO = 0.95;
 
 // Load the given image uri to an invisible canvas and return the canvas and its 2d context
 // Also resize the picture to make its pixel count as close to targetSize as possible
@@ -132,7 +132,7 @@ export async function drawCode(code: string, imageFileUri: string) {
     while (codeSegments.length < runs.length) {
         const nextRunLength = runs[codeSegments.length].length;
         if (nextRunLength > 5) {
-            codeSegments.push(`/*${'-'.repeat(nextRunLength - 4)}*/`);
+            codeSegments.push(`/*${'o'.repeat(nextRunLength - 4)}*/`);
         } else {
             codeSegments.push(' '.repeat(nextRunLength));
         }
@@ -157,6 +157,7 @@ export async function drawCode(code: string, imageFileUri: string) {
         result += `\n${codeSegments[i]}`;
     }
     console.log(runIndex);
+    console.log('HEY');
     console.log(result);
     // TODO: then put it out in an output text box
     console.log(eval(result));
