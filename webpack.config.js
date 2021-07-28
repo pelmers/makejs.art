@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, 'src');
@@ -41,6 +42,17 @@ module.exports = {
             },
         ],
     },
+    // https://stackoverflow.com/a/64553486
+    plugins: [
+        // fix "process is not defined" error:
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+        // fix "Buffer not defined" error:
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
+    ],
 
     devtool: 'inline-cheap-module-source-map',
     devServer: {},

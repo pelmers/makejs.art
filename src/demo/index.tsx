@@ -2,6 +2,16 @@ import React from 'react';
 import { hydrate, render } from 'react-dom';
 import { drawCode } from './custom';
 
+// Used for testing so I don't need to keep adding test values, publicly this is empty.
+const INITIAL_CODE_VALUE =
+    'let testfn;' +
+    `
+testfn = () => {
+    return [1, 2, 3, 4, 5, 6];
+};
+`.repeat(50) +
+    'testfn();';
+
 type State = {
     result?: string;
     codeInput?: string;
@@ -12,7 +22,7 @@ type State = {
 class App extends React.Component<{}, State> {
     state = {
         result: undefined,
-        codeInput: undefined,
+        codeInput: INITIAL_CODE_VALUE,
         imageFile: undefined,
         error: undefined,
     };
@@ -91,6 +101,7 @@ class App extends React.Component<{}, State> {
                         id="code-text"
                         aria-label="input field for javascript source code"
                         onChange={(e) => this.setState({ codeInput: e.target.value })}
+                        value={INITIAL_CODE_VALUE}
                     ></textarea>
                     {imageArea}
                     {doIt}
