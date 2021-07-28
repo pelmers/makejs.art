@@ -12,12 +12,9 @@
 import { parse } from '@babel/parser';
 import { WhitespaceMarkerGenerator } from '../generator';
 import { minCodeSize, parseTokens, reshape } from '../reshape';
-import pica from 'pica';
 import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../constants';
 
-function escapeRegExp(text: string) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
+const pica = import('pica');
 
 // so an idea is, given an image:
 // first convert to ascii by looking at intensities (filter out e.g. bottom half by median?)
@@ -65,7 +62,7 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
     target.height = Math.round(
         (source.height * ratio) / Math.sqrt(DEFAULT_HEIGHT_WIDTH_RATIO)
     );
-    const resizer = pica();
+    const resizer = (await pica).default();
     await resizer.resize(source, target);
     return { canvas: target, ctx: target.getContext('2d')! };
 }
