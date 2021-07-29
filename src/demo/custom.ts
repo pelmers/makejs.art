@@ -77,7 +77,10 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
 // First I convert every pixel to an intensity (for now just r + g + b)
 // Then I make a histogram and find the cutoff value above which there are image size * INTENSITY_CUTOFF pixels
 // Finally go through the image again and mark consecutive runs of such pixels
-function findCodeRegions(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): number[][] {
+function findCodeRegions(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D
+): number[][] {
     // Build an intensity histogram so we can find the value that hits cutoff
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const histogram = new Array(INTENSITY_RANGE).fill(0);
