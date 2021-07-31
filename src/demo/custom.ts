@@ -13,6 +13,7 @@ import { parse } from '@babel/parser';
 import { WhitespaceMarkerGenerator } from '../generator';
 import { minCodeSize, parseTokens, reshape } from '../reshape';
 import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../constants';
+import { cheng11 } from './saliency';
 
 const pica = import('pica');
 
@@ -33,6 +34,7 @@ const INTENSITY_CUTOFF = 0.3;
 const INTENSITY_RANGE = 1 + 255 * 3;
 // Resize images to accomodate imperfect fill
 const SIZE_BUFFER_RATIO = 0.95;
+export const SALIENCY_BUCKETS = 12;
 
 // Load the given image uri to an invisible canvas and return the canvas and its 2d context
 // Also resize the picture to make its pixel count as close to targetSize as possible
@@ -71,32 +73,17 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
 // methods include:
 // semi-interactive: https://dahtah.github.io/imager/foreground_background.html
 // automated visual attention based: https://mmcheng.net/mftp/Papers/SaliencyTPAMI.pdf
+// opencvjs has grabcut and findcontours, perhaps can use findcontours to replace the region finding
+// https://docs.opencv.org/4.5.2/d2/dbd/tutorial_distance_transform.html
+// actually if i just do the HC method, i think i can do it all in JS since it's just pixel-based
+// for color difference, https://github.com/hamada147/IsThisColourSimilar
+// Saliency of a pixel is sum of its color distance with all other pixels
 
-// Return consecutive indices (row * width + col) where code should be placed
-// How does it work?
-// First I convert every pixel to an intensity (for now just r + g + b)
-// Then I make a histogram and find the cutoff value above which there are image size * INTENSITY_CUTOFF pixels
-// Finally go through the image again and mark consecutive runs of such pixels
-function findCodeRegions(
+function extractRunsByCutoff(
     canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D
-): number[][] {
-    // Build an intensity histogram so we can find the value that hits cutoff
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const histogram = new Array(INTENSITY_RANGE).fill(0);
-    for (let i = 0; i < data.data.length; i += 4) {
-        const [r, g, b, a] = data.data.slice(i, i + 4);
-        const intensity = Math.round((a / 255) * (r + g + b));
-        histogram[intensity]++;
-    }
-    // Find the cutoff value by looking at histogram
-    const cutoff = canvas.width * canvas.height * INTENSITY_CUTOFF;
-    let accum = 0;
-    let cutoffValue = histogram.length - 1;
-    while (accum < cutoff && cutoffValue > 0) {
-        accum += histogram[cutoffValue];
-        cutoffValue--;
-    }
+    data: ImageData,
+    cutoff: number
+) {
     // compute 'runs' of pixels > cutoff in the image rows to use as line widths
     const runs: number[][] = [];
     for (let row = 0; row < canvas.height; row++) {
@@ -104,7 +91,7 @@ function findCodeRegions(
             const i = row * canvas.width + col;
             const [r, g, b, a] = data.data.slice(i * 4, (i + 1) * 4);
             const intensity = Math.round((a / 255) * (r + g + b));
-            if (intensity >= cutoffValue) {
+            if (intensity >= cutoff) {
                 // Decide whether we're still on the last run, or make a new one
                 if (
                     runs.length > 0 &&
@@ -121,29 +108,61 @@ function findCodeRegions(
     return runs;
 }
 
+// Return consecutive indices (row * width + col) where code should be placed
+// How does it work?
+// First I convert every pixel to an intensity (for now just r + g + b)
+// Then I make a histogram and find the cutoff value above which there are image size * INTENSITY_CUTOFF pixels
+// Finally go through the image again and mark consecutive runs of such pixels
+function findCodeRegions(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D
+): number[][] {
+    // Build an intensity histogram so we can find the value that hits cutoff
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const histogram: number[] = new Array(INTENSITY_RANGE).fill(0);
+    for (let i = 0; i < data.data.length; i += 4) {
+        const [r, g, b, a] = data.data.slice(i, i + 4);
+        const intensity = Math.round((a / 255) * (r + g + b));
+        histogram[intensity]++;
+    }
+    // Find the cutoff value by looking at histogram
+    const cutoff = canvas.width * canvas.height * INTENSITY_CUTOFF;
+    let accum = 0;
+    let cutoffValue = histogram.length - 1;
+    while (accum < cutoff && cutoffValue > 0) {
+        accum += histogram[cutoffValue];
+        cutoffValue--;
+    }
+    return extractRunsByCutoff(canvas, data, cutoffValue);
+}
+
 export async function drawCode(code: string, imageFileUri: string) {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);
     // maybe have user click which areas to fill in?
     const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / INTENSITY_CUTOFF;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
+    console.time('thing');
+    cheng11(canvas, ctx);
+    console.timeEnd('thing');
+    document.body.appendChild(canvas);
+    return;
     const runs = findCodeRegions(canvas, ctx);
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;
     const codeSegments = reshape(tokens, shapeFn);
-    console.log('got segments');
     if (codeSegments.length > runs.length + 1) {
         // should never be reached!
         throw new Error(
             `Unexpected segment length of ${codeSegments.length} from ${runs.length} runs`
         );
     }
-    console.log(codeSegments.length, runs.length);
     // If there are more runs than segments, populate remainder with empty spaces
     while (codeSegments.length < runs.length) {
         const nextRunLength = runs[codeSegments.length].length;
         if (nextRunLength > 5) {
+            // longer runs can be filled in to more closely match appearance
             codeSegments.push(`/*${'o'.repeat(nextRunLength - 4)}*/`);
         } else {
             codeSegments.push(' '.repeat(nextRunLength));
@@ -168,11 +187,8 @@ export async function drawCode(code: string, imageFileUri: string) {
     for (let i = runIndex; i < codeSegments.length; i++) {
         result += `\n${codeSegments[i]}`;
     }
-    console.log(runIndex);
-    console.log('HEY');
     console.log(result);
     // TODO: then put it out in an output text box
-    console.log(eval(result));
 }
 
 // improvement idea: https://dahtah.github.io/imager/foreground_background.html#k-nearest-neighbour-approach

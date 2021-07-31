@@ -1,0 +1,3 @@
+[submodule "src/demo/vendor/IsThisColourSimilar"]
+	path = src/demo/vendor/IsThisColourSimilar
+	url = https://github.com/hamada147/IsThisColourSimilar
