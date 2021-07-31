@@ -14,6 +14,12 @@ import { WhitespaceMarkerGenerator } from '../generator';
 import { minCodeSize, parseTokens, reshape } from '../reshape';
 import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../constants';
 import { cheng11 } from './saliency';
+import {
+    extractRunsByCutoff,
+    INTENSITY_CUTOFF,
+    INTENSITY_RANGE,
+    SIZE_BUFFER_RATIO,
+} from './common';
 
 const pica = import('pica');
 
@@ -27,14 +33,6 @@ const pica = import('pica');
 // https://coderwall.com/p/jzdmdq/loading-image-from-local-file-into-javascript-and-getting-pixel-data
 
 // site design example? https://ascii-generator.site/
-
-// TODO add as input to the fn
-const INTENSITY_CUTOFF = 0.3;
-// Intensity values are sum of r, g, b at each pixel
-const INTENSITY_RANGE = 1 + 255 * 3;
-// Resize images to accomodate imperfect fill
-const SIZE_BUFFER_RATIO = 0.95;
-export const SALIENCY_BUCKETS = 12;
 
 // Load the given image uri to an invisible canvas and return the canvas and its 2d context
 // Also resize the picture to make its pixel count as close to targetSize as possible
@@ -79,35 +77,6 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
 // for color difference, https://github.com/hamada147/IsThisColourSimilar
 // Saliency of a pixel is sum of its color distance with all other pixels
 
-function extractRunsByCutoff(
-    canvas: HTMLCanvasElement,
-    data: ImageData,
-    cutoff: number
-) {
-    // compute 'runs' of pixels > cutoff in the image rows to use as line widths
-    const runs: number[][] = [];
-    for (let row = 0; row < canvas.height; row++) {
-        for (let col = 0; col < canvas.width; col++) {
-            const i = row * canvas.width + col;
-            const [r, g, b, a] = data.data.slice(i * 4, (i + 1) * 4);
-            const intensity = Math.round((a / 255) * (r + g + b));
-            if (intensity >= cutoff) {
-                // Decide whether we're still on the last run, or make a new one
-                if (
-                    runs.length > 0 &&
-                    col > 0 &&
-                    runs[runs.length - 1][runs[runs.length - 1].length - 1] === i - 1
-                ) {
-                    runs[runs.length - 1].push(i);
-                } else {
-                    runs.push([i]);
-                }
-            }
-        }
-    }
-    return runs;
-}
-
 // Return consecutive indices (row * width + col) where code should be placed
 // How does it work?
 // First I convert every pixel to an intensity (for now just r + g + b)
@@ -125,15 +94,22 @@ function findCodeRegions(
         const intensity = Math.round((a / 255) * (r + g + b));
         histogram[intensity]++;
     }
+
     // Find the cutoff value by looking at histogram
-    const cutoff = canvas.width * canvas.height * INTENSITY_CUTOFF;
+    const cutoff = data.width * data.height * INTENSITY_CUTOFF;
     let accum = 0;
     let cutoffValue = histogram.length - 1;
     while (accum < cutoff && cutoffValue > 0) {
         accum += histogram[cutoffValue];
         cutoffValue--;
     }
-    return extractRunsByCutoff(canvas, data, cutoffValue);
+    console.log(cutoffValue, cutoff);
+    return extractRunsByCutoff(data.width, data.height, (row, col) => {
+        const i = row * data.width + col;
+        const [r, g, b, a] = data.data.slice(i * 4, (i + 1) * 4);
+        const intensity = Math.round((a / 255) * (r + g + b));
+        return intensity >= cutoffValue;
+    });
 }
 
 export async function drawCode(code: string, imageFileUri: string) {
@@ -143,11 +119,10 @@ export async function drawCode(code: string, imageFileUri: string) {
     const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / INTENSITY_CUTOFF;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
     console.time('thing');
-    cheng11(canvas, ctx);
+    const runs = cheng11(canvas, ctx);
     console.timeEnd('thing');
     document.body.appendChild(canvas);
-    return;
-    const runs = findCodeRegions(canvas, ctx);
+    // const runs = findCodeRegions(canvas, ctx);
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;
