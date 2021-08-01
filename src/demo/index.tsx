@@ -1,5 +1,6 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
+import { INTENSITY_CUTOFF } from './common';
 
 // Used for testing so I don't need to keep adding test values, publicly this is empty.
 const INITIAL_CODE_VALUE =
@@ -20,6 +21,43 @@ type State = {
 
 const customModule = import('./custom');
 
+type ConfigState = {
+    cutoff?: number;
+    mode?: 'intensity' | 'saliency';
+    invert?: boolean;
+};
+
+type ConfigProps = {
+    code: string;
+    image: string;
+    onResult: (code: string) => void;
+    onError: (err: string) => void;
+};
+
+class Configuration extends React.Component<ConfigProps, ConfigState> {
+    state = {
+        cutoff: INTENSITY_CUTOFF,
+        mode: 'intensity' as const,
+        invert: false,
+    };
+
+    handleSubmit = async () => {
+        const { code, image } = this.props;
+        const { drawCode } = await customModule;
+        try {
+            // TODO: then put it out in an output text box
+            this.props.onResult(await drawCode(code, image));
+        } catch (e) {
+            this.props.onError(e.message);
+        }
+    };
+
+    render() {
+        // TODO implement inputs ui for config options
+        return <button onClick={this.handleSubmit}>Do the thing</button>;
+    }
+}
+
 class App extends React.Component<{}, State> {
     state = {
         result: undefined,
@@ -38,23 +76,10 @@ class App extends React.Component<{}, State> {
         reader.readAsDataURL(f);
     };
 
-    handleSubmit = async () => {
-        const { codeInput, imageFile } = this.state;
-        if (codeInput == null || imageFile == null) {
-            throw new Error('Cannot continue unless image and code are provided');
-        }
-        const { drawCode } = await customModule;
-        try {
-            await drawCode(codeInput, imageFile!);
-        } catch (e) {
-            this.setState({ error: e.message });
-            console.error(e);
-        }
-    };
-
     render() {
+        const { codeInput, imageFile } = this.state;
         const imageArea =
-            this.state.imageFile != null ? (
+            imageFile != null ? (
                 <img src={this.state.imageFile}></img>
             ) : (
                 <div
@@ -84,9 +109,17 @@ class App extends React.Component<{}, State> {
                     />
                 </div>
             );
-        const doIt =
-            // this.state.imageFile != null && this.state.codeInput != null ? (
-            true ? <button onClick={this.handleSubmit}>Do the thing</button> : <></>;
+        const configStep = imageFile != null && codeInput != null && (
+            <Configuration
+                code={codeInput}
+                image={imageFile!}
+                onResult={(code) => {
+                    console.log(code);
+                    this.setState({ result: code });
+                }}
+                onError={(error) => this.setState({ error })}
+            />
+        );
 
         return (
             <>
@@ -106,7 +139,7 @@ class App extends React.Component<{}, State> {
                         value={this.state.codeInput}
                     ></textarea>
                     {imageArea}
-                    {doIt}
+                    {configStep}
                 </div>
             </>
         );

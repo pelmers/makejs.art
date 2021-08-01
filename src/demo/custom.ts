@@ -112,7 +112,7 @@ function findCodeRegions(
     });
 }
 
-export async function drawCode(code: string, imageFileUri: string) {
+export async function drawCode(code: string, imageFileUri: string): Promise<string> {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);
     // maybe have user click which areas to fill in?
@@ -162,8 +162,7 @@ export async function drawCode(code: string, imageFileUri: string) {
     for (let i = runIndex; i < codeSegments.length; i++) {
         result += `\n${codeSegments[i]}`;
     }
-    console.log(result);
-    // TODO: then put it out in an output text box
+    return result;
 }
 
 // improvement idea: https://dahtah.github.io/imager/foreground_background.html#k-nearest-neighbour-approach
