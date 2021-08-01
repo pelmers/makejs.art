@@ -7,6 +7,16 @@ export const SIZE_BUFFER_RATIO = 0.95;
 // 12 is value referenced in Cheng '11
 export const SALIENCY_BUCKETS = 12;
 
+export const MODES = ['intensity', 'saliency'] as const;
+export type ModeType = typeof MODES[number];
+
+export function modeDescription(mode: ModeType): string {
+    return {
+        intensity: 'Intensity (faster)',
+        saliency: 'Saliency (slower)',
+    }[mode];
+}
+
 export function extractRunsByCutoff(
     width: number,
     height: number,

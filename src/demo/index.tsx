@@ -1,6 +1,6 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
-import { INTENSITY_CUTOFF } from './common';
+import { INTENSITY_CUTOFF, modeDescription, MODES, ModeType } from './common';
 
 // Used for testing so I don't need to keep adding test values, publicly this is empty.
 const INITIAL_CODE_VALUE =
@@ -23,8 +23,9 @@ const customModule = import('./custom');
 
 type ConfigState = {
     cutoff?: number;
-    mode?: 'intensity' | 'saliency';
+    mode?: ModeType;
     invert?: boolean;
+    loading?: boolean;
 };
 
 type ConfigProps = {
@@ -37,24 +38,58 @@ type ConfigProps = {
 class Configuration extends React.Component<ConfigProps, ConfigState> {
     state = {
         cutoff: INTENSITY_CUTOFF,
-        mode: 'intensity' as const,
+        mode: MODES[0],
         invert: false,
+        loading: false,
     };
 
     handleSubmit = async () => {
         const { code, image } = this.props;
+        const { mode } = this.state;
         const { drawCode } = await customModule;
         try {
+            this.setState({ loading: true });
             // TODO: then put it out in an output text box
-            this.props.onResult(await drawCode(code, image));
+            this.props.onResult(await drawCode(code, image, mode));
         } catch (e) {
             this.props.onError(e.message);
+        } finally {
+            this.setState({ loading: false });
         }
     };
 
     render() {
         // TODO implement inputs ui for config options
-        return <button onClick={this.handleSubmit}>Do the thing</button>;
+        // TODO implement loading spinner/text
+        const { mode, loading } = this.state;
+        return (
+            <>
+                Processing Mode
+                <div>
+                    {MODES.map((m, key) => (
+                        <>
+                            <input
+                                key={key}
+                                type="radio"
+                                value={m}
+                                name="mode"
+                                checked={m === mode}
+                                onChange={(event) => {
+                                    if (event.target.checked) {
+                                        this.setState({
+                                            mode: event.target.value as ModeType,
+                                        });
+                                    }
+                                }}
+                            />{' '}
+                            {modeDescription(m)}
+                        </>
+                    ))}
+                </div>
+                {!loading && <button onClick={this.handleSubmit}>Do the thing</button>}
+                {loading && <>TODO Loading text here</>}
+            </>
+        );
     }
 }
 

@@ -18,6 +18,7 @@ import {
     extractRunsByCutoff,
     INTENSITY_CUTOFF,
     INTENSITY_RANGE,
+    ModeType,
     SIZE_BUFFER_RATIO,
 } from './common';
 
@@ -112,15 +113,20 @@ function findCodeRegions(
     });
 }
 
-export async function drawCode(code: string, imageFileUri: string): Promise<string> {
+export async function drawCode(
+    code: string,
+    imageFileUri: string,
+    mode: ModeType
+): Promise<string> {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);
     // maybe have user click which areas to fill in?
     const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / INTENSITY_CUTOFF;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
-    console.time('thing');
-    const runs = cheng11(canvas, ctx);
-    console.timeEnd('thing');
+    console.time('draw');
+    const runs =
+        mode === 'saliency' ? cheng11(canvas, ctx) : findCodeRegions(canvas, ctx);
+    console.timeEnd('draw');
     document.body.appendChild(canvas);
     // const runs = findCodeRegions(canvas, ctx);
     // Run reshape according to those runs of pixels

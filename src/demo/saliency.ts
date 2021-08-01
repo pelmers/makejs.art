@@ -35,7 +35,7 @@ export function cheng11(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
         const [r, g, b] = data.data.slice(i, i + 3);
         colorHistogram[colorToIndex(r, g, b)]++;
     }
-    console.log(colorHistogram, indexToColor);
+    // console.log(colorHistogram, indexToColor);
     // TODO threshold the color histogram by keeping 95% of the pixels
     const perPixelSaliency: number[] = new Array(canvas.width * canvas.height);
     const diff = (
@@ -102,8 +102,8 @@ export function cheng11(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     }
 
     ctx.putImageData(newData, 0, 0);
-    console.log(perPixelSaliency);
-    console.log(newData);
+    // console.log(perPixelSaliency);
+    // console.log(newData);
     return extractRunsByCutoff(data.width, data.height, (row, col) => {
         const i = row * data.width + col;
         return perPixelSaliency[i] >= cutoffValue;
