@@ -44,19 +44,24 @@ async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
 export async function drawCode(
     code: string,
     imageFileUri: string,
-    mode: ModeType
+    mode: ModeType,
+    cutoff: number,
+    invert: boolean,
 ): Promise<string> {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);
+    if (invert) {
+        cutoff = 1 - cutoff;
+    }
     // maybe have user click which areas to fill in?
     const targetSize =
-        (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / DEFAULT_CUTOFF_THRESHOLD;
+        (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / cutoff;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
     console.time('draw');
     const runs =
         mode === 'saliency'
-            ? findRegionsBySaliency(canvas, ctx)
-            : findRegionsByIntensity(canvas, ctx);
+            ? findRegionsBySaliency(canvas, ctx, cutoff, invert)
+            : findRegionsByIntensity(canvas, ctx, cutoff, invert);
     console.timeEnd('draw');
     document.body.appendChild(canvas);
     // const runs = findCodeRegions(canvas, ctx);

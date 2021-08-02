@@ -50,12 +50,12 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
 
     handleSubmit = async () => {
         const { code, image } = this.props;
-        const { mode } = this.state;
+        const { mode, cutoff, invert } = this.state;
         const { drawCode } = await algoModule;
         try {
             this.setState({ loading: true });
             // TODO: then put it out in an output text box
-            this.props.onResult(await drawCode(code, image, mode));
+            this.props.onResult(await drawCode(code, image, mode, cutoff, invert));
         } catch (e) {
             this.props.onError(e.message);
         } finally {
@@ -95,8 +95,8 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
                     Threshold
                     <input
                         type="range"
-                        max="1"
-                        min="0"
+                        max="0.99"
+                        min="0.01"
                         step="0.01"
                         value={cutoff}
                         onChange={(event) =>
