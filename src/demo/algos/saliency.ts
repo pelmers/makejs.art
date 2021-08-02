@@ -11,7 +11,7 @@ export function findRegionsBySaliency(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     cutoffRatio: number,
-    invert: boolean,
+    invert: boolean
 ) {
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // cheng method quantizes 0, 255 range into 12 buckets for each of r,g,b
@@ -77,9 +77,10 @@ export function findRegionsBySaliency(
         maxSaliency = Math.max(maxSaliency, perPixelSaliency[i / 4]);
     }
     // TODO implement quantization smoothingg
-    const sortedPixels = perPixelSaliency.concat().sort((a, b) => invert ? a - b : b - a);
-    const cutoffValue =
-        sortedPixels[Math.round(cutoffRatio * sortedPixels.length)];
+    const sortedPixels = perPixelSaliency
+        .concat()
+        .sort((a, b) => (invert ? a - b : b - a));
+    const cutoffValue = sortedPixels[Math.round(cutoffRatio * sortedPixels.length)];
 
     // TODO remove these lines
     const newData = new ImageData(
@@ -110,7 +111,9 @@ export function findRegionsBySaliency(
     // console.log(newData);
     return extractRunsByCutoff(data.width, data.height, (row, col) => {
         const i = row * data.width + col;
-        return invert ? perPixelSaliency[i] <= cutoffValue: perPixelSaliency[i] >= cutoffValue;
+        return invert
+            ? perPixelSaliency[i] <= cutoffValue
+            : perPixelSaliency[i] >= cutoffValue;
     });
 }
 

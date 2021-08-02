@@ -43,7 +43,7 @@ type ConfigProps = {
 class Configuration extends React.Component<ConfigProps, ConfigState> {
     state = {
         cutoff: DEFAULT_CUTOFF_THRESHOLD,
-        mode: MODES[1],
+        mode: MODES[0],
         invert: false,
         loading: false,
     };
@@ -64,7 +64,6 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
     };
 
     render() {
-        // TODO implement inputs ui for config options
         // TODO implement loading spinner/text
         const { mode, loading, cutoff, invert } = this.state;
         return (
@@ -128,6 +127,75 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
     }
 }
 
+type ResultProps = {
+    code: string;
+};
+
+class ResultComponent extends React.Component<ResultProps, {}> {
+    ref: React.RefObject<HTMLTextAreaElement> = React.createRef();
+    resizeListener: () => void;
+
+    render() {
+        const { code } = this.props;
+        const lines = code.split('\n');
+        const height = lines.length;
+        const width = lines.reduce((prev, cur) => Math.max(prev, cur.length), 0);
+        console.log('result', code);
+        return (
+            <textarea
+                className="mono"
+                ref={this.ref}
+                style={{
+                    height: `${height}em`,
+                    width: `${width}ch`,
+                    margin: '0 auto',
+                    // only block-level elements can be centered; textarea is inline by default
+                    display: 'block',
+                }}
+                value={code}
+                disabled
+            />
+        );
+    }
+
+    rescale() {
+        if (!this.ref.current) {
+            return;
+        }
+        const $el = this.ref.current!;
+        const styles = window.getComputedStyle($el);
+        // find the ratio of code dimensions to the window dimensions
+        const widthRatio = Number(styles.width.split('px')[0]) / window.innerWidth;
+        const heightRatio = Number(styles.height.split('px')[0]) / window.innerHeight;
+        const minFontSize = 3;
+        const maxFontSize = 18;
+        // if the code is too big for the window, scale the font size down
+        $el.style.fontSize = `${Math.min(
+            maxFontSize,
+            Math.max(
+                minFontSize,
+                Number(styles.fontSize.split('px')[0]) /
+                    Math.max(widthRatio, heightRatio)
+            )
+        )}px`;
+        $el.style.height = `${$el.scrollHeight + 5}px`;
+    }
+
+    componentDidMount() {
+        this.resizeListener = () => this.rescale();
+        window.addEventListener('resize', this.resizeListener);
+        this.rescale();
+    }
+
+    componentDidUpdate() {
+        this.rescale();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeListener);
+    }
+}
+
 class App extends React.Component<{}, State> {
     state = {
         result: undefined,
@@ -147,10 +215,15 @@ class App extends React.Component<{}, State> {
     };
 
     render() {
-        const { codeInput, imageFile } = this.state;
+        const { codeInput, imageFile, result } = this.state;
         const imageArea =
             imageFile != null ? (
-                <img src={this.state.imageFile}></img>
+                <>
+                    <img src={this.state.imageFile}></img>
+                    <button onClick={() => this.setState({ imageFile: undefined })}>
+                        Clear Image
+                    </button>
+                </>
             ) : (
                 <div
                     id="dragdrop"
@@ -184,12 +257,12 @@ class App extends React.Component<{}, State> {
                 code={codeInput}
                 image={imageFile!}
                 onResult={(code) => {
-                    console.log(code);
                     this.setState({ result: code });
                 }}
                 onError={(error) => this.setState({ error })}
             />
         );
+        const resultStep = result != null && <ResultComponent code={result!} />;
 
         return (
             <>
@@ -212,6 +285,7 @@ class App extends React.Component<{}, State> {
                     {imageArea}
                     {configStep}
                 </div>
+                {resultStep}
             </>
         );
     }

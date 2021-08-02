@@ -46,7 +46,7 @@ export async function drawCode(
     imageFileUri: string,
     mode: ModeType,
     cutoff: number,
-    invert: boolean,
+    invert: boolean
 ): Promise<string> {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);
@@ -54,17 +54,15 @@ export async function drawCode(
         cutoff = 1 - cutoff;
     }
     // maybe have user click which areas to fill in?
-    const targetSize =
-        (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / cutoff;
+    const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / cutoff;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
     console.time('draw');
+    // TODO make these a web worker to avoid blocking
     const runs =
         mode === 'saliency'
             ? findRegionsBySaliency(canvas, ctx, cutoff, invert)
             : findRegionsByIntensity(canvas, ctx, cutoff, invert);
     console.timeEnd('draw');
-    document.body.appendChild(canvas);
-    // const runs = findCodeRegions(canvas, ctx);
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;
