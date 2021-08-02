@@ -166,17 +166,12 @@ class ResultComponent extends React.Component<ResultProps, {}> {
         const styles = window.getComputedStyle($el);
         // find the ratio of code dimensions to the window dimensions
         const widthRatio = Number(styles.width.split('px')[0]) / window.innerWidth;
-        const heightRatio = Number(styles.height.split('px')[0]) / window.innerHeight;
         const minFontSize = 3;
         const maxFontSize = 18;
         // if the code is too big for the window, scale the font size down
         $el.style.fontSize = `${Math.min(
             maxFontSize,
-            Math.max(
-                minFontSize,
-                Number(styles.fontSize.split('px')[0]) /
-                    Math.max(widthRatio, heightRatio)
-            )
+            Math.max(minFontSize, Number(styles.fontSize.split('px')[0]) / widthRatio)
         )}px`;
         $el.style.height = `${$el.scrollHeight + 5}px`;
     }
