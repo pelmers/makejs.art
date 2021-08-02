@@ -1,5 +1,4 @@
-// TODO add as input to the fn
-export const INTENSITY_CUTOFF = 0.3;
+export const DEFAULT_CUTOFF_THRESHOLD = 0.3;
 // Intensity values are sum of r, g, b at each pixel
 export const INTENSITY_RANGE = 1 + 255 * 3;
 // Resize images to accomodate imperfect fill

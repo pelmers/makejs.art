@@ -1,16 +1,21 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
-import { INTENSITY_CUTOFF, modeDescription, MODES, ModeType } from './common';
+import {
+    DEFAULT_CUTOFF_THRESHOLD,
+    modeDescription,
+    MODES,
+    ModeType,
+} from './algos/common';
 
 // Used for testing so I don't need to keep adding test values, publicly this is empty.
 const INITIAL_CODE_VALUE =
-    'let testfn;' +
+    'const x = console.log.bind(console);' +
     `
-testfn = () => {
-    return [1, 2, 3, 4, 5, 6];
-};
-`.repeat(50) +
-    'testfn();';
+    x('hi');
+    x(123);
+    x(456);
+`.repeat(150) +
+    `x('done');`;
 
 type State = {
     result?: string;
@@ -19,7 +24,7 @@ type State = {
     error?: string;
 };
 
-const customModule = import('./custom');
+const algoModule = import('./algos/entry');
 
 type ConfigState = {
     cutoff?: number;
@@ -37,8 +42,8 @@ type ConfigProps = {
 
 class Configuration extends React.Component<ConfigProps, ConfigState> {
     state = {
-        cutoff: INTENSITY_CUTOFF,
-        mode: MODES[0],
+        cutoff: DEFAULT_CUTOFF_THRESHOLD,
+        mode: MODES[1],
         invert: false,
         loading: false,
     };
@@ -46,7 +51,7 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
     handleSubmit = async () => {
         const { code, image } = this.props;
         const { mode } = this.state;
-        const { drawCode } = await customModule;
+        const { drawCode } = await algoModule;
         try {
             this.setState({ loading: true });
             // TODO: then put it out in an output text box
@@ -61,7 +66,7 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
     render() {
         // TODO implement inputs ui for config options
         // TODO implement loading spinner/text
-        const { mode, loading } = this.state;
+        const { mode, loading, cutoff, invert } = this.state;
         return (
             <>
                 Processing Mode
@@ -86,8 +91,38 @@ class Configuration extends React.Component<ConfigProps, ConfigState> {
                         </>
                     ))}
                 </div>
-                {!loading && <button onClick={this.handleSubmit}>Do the thing</button>}
-                {loading && <>TODO Loading text here</>}
+                <div>
+                    Threshold
+                    <input
+                        type="range"
+                        max="1"
+                        min="0"
+                        step="0.01"
+                        value={cutoff}
+                        onChange={(event) =>
+                            this.setState({
+                                cutoff: Number.parseFloat(event.target.value),
+                            })
+                        }
+                    />
+                    {cutoff}
+                </div>
+                <div>
+                    Invert?
+                    <input
+                        type="checkbox"
+                        checked={invert}
+                        onChange={(event) =>
+                            this.setState({ invert: event.target.checked })
+                        }
+                    />
+                </div>
+                <div>
+                    {!loading && (
+                        <button onClick={this.handleSubmit}>Do the thing</button>
+                    )}
+                    {loading && <>TODO Loading text here</>}
+                </div>
             </>
         );
     }
@@ -167,6 +202,7 @@ class App extends React.Component<{}, State> {
                 </div>
                 <div id="container">
                     {this.state.error != null && <div>Error! {this.state.error}</div>}
+                    <h3>JavaScript Code 💻</h3>
                     <textarea
                         id="code-text"
                         aria-label="input field for javascript source code"

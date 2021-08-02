@@ -1,14 +1,16 @@
 import {
     extractRunsByCutoff,
-    INTENSITY_CUTOFF,
-    INTENSITY_RANGE,
+    DEFAULT_CUTOFF_THRESHOLD,
     SALIENCY_BUCKETS,
 } from './common';
 
 // @ts-ignore no types provided
-import { Colour } from './vendor/IsThisColourSimilar/Colour';
+import { Colour } from '../vendor/IsThisColourSimilar/Colour';
 
-export function cheng11(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+export function findRegionsBySaliency(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D
+) {
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // cheng method quantizes 0, 255 range into 12 buckets for each of r,g,b
     const colorHistogram: number[] = new Array(Math.pow(SALIENCY_BUCKETS, 3)).fill(0);
@@ -75,7 +77,7 @@ export function cheng11(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     // TODO implement quantization smoothingg
     const sortedPixels = perPixelSaliency.concat().sort((a, b) => b - a);
     const cutoffValue =
-        sortedPixels[Math.round(INTENSITY_CUTOFF * sortedPixels.length)];
+        sortedPixels[Math.round(DEFAULT_CUTOFF_THRESHOLD * sortedPixels.length)];
 
     // TODO remove these lines
     const newData = new ImageData(
