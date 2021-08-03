@@ -14,7 +14,6 @@ export class WhitespaceMarkerGenerator extends CodeGenerator {
     constructor(ast: Node) {
         // Concise replace newlines with spaces, which will let us insert more whitespace markers.
         super(ast, { compact: true, comments: false });
-        // TODO not sure whether compact or concise is better
     }
 
     generate() {

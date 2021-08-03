@@ -7,6 +7,10 @@ import {
 // @ts-ignore no types provided
 import { Colour } from '../vendor/IsThisColourSimilar/Colour';
 
+// Uses global perceptual contrast to detect salient regions,
+// implementation of the algorithm in the below paper:
+// M.-M. Cheng et al., "Global Contrast based Salient Region Detection", in IEEE CVPR, 2011
+// https://mmcheng.net/mftp/Papers/SaliencyTPAMI.pdf
 export function findRegionsBySaliency(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,

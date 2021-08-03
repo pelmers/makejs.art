@@ -1,11 +1,7 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
-import {
-    DEFAULT_CUTOFF_THRESHOLD,
-    modeDescription,
-    MODES,
-    ModeType,
-} from './algos/common';
+import { Configuration } from './ui/Configuration';
+import { ResultComponent } from './ui/ResultComponent';
 
 // Used for testing so I don't need to keep adding test values, publicly this is empty.
 const INITIAL_CODE_VALUE =
@@ -23,173 +19,6 @@ type State = {
     imageFile?: string;
     error?: string;
 };
-
-const algoModule = import('./algos/entry');
-
-type ConfigState = {
-    cutoff?: number;
-    mode?: ModeType;
-    invert?: boolean;
-    loading?: boolean;
-};
-
-type ConfigProps = {
-    code: string;
-    image: string;
-    onResult: (code: string) => void;
-    onError: (err: string) => void;
-};
-
-class Configuration extends React.Component<ConfigProps, ConfigState> {
-    state = {
-        cutoff: DEFAULT_CUTOFF_THRESHOLD,
-        mode: MODES[0],
-        invert: false,
-        loading: false,
-    };
-
-    handleSubmit = async () => {
-        const { code, image } = this.props;
-        const { mode, cutoff, invert } = this.state;
-        const { drawCode } = await algoModule;
-        try {
-            this.setState({ loading: true });
-            // TODO: then put it out in an output text box
-            this.props.onResult(await drawCode(code, image, mode, cutoff, invert));
-        } catch (e) {
-            this.props.onError(e.message);
-        } finally {
-            this.setState({ loading: false });
-        }
-    };
-
-    render() {
-        // TODO implement loading spinner/text
-        const { mode, loading, cutoff, invert } = this.state;
-        return (
-            <>
-                Processing Mode
-                <div>
-                    {MODES.map((m, key) => (
-                        <>
-                            <input
-                                key={key}
-                                type="radio"
-                                value={m}
-                                name="mode"
-                                checked={m === mode}
-                                onChange={(event) => {
-                                    if (event.target.checked) {
-                                        this.setState({
-                                            mode: event.target.value as ModeType,
-                                        });
-                                    }
-                                }}
-                            />{' '}
-                            {modeDescription(m)}
-                        </>
-                    ))}
-                </div>
-                <div>
-                    Threshold
-                    <input
-                        type="range"
-                        max="0.99"
-                        min="0.01"
-                        step="0.01"
-                        value={cutoff}
-                        onChange={(event) =>
-                            this.setState({
-                                cutoff: Number.parseFloat(event.target.value),
-                            })
-                        }
-                    />
-                    {cutoff}
-                </div>
-                <div>
-                    Invert?
-                    <input
-                        type="checkbox"
-                        checked={invert}
-                        onChange={(event) =>
-                            this.setState({ invert: event.target.checked })
-                        }
-                    />
-                </div>
-                <div>
-                    {!loading && (
-                        <button onClick={this.handleSubmit}>Do the thing</button>
-                    )}
-                    {loading && <>TODO Loading text here</>}
-                </div>
-            </>
-        );
-    }
-}
-
-type ResultProps = {
-    code: string;
-};
-
-class ResultComponent extends React.Component<ResultProps, {}> {
-    ref: React.RefObject<HTMLTextAreaElement> = React.createRef();
-    resizeListener: () => void;
-
-    render() {
-        const { code } = this.props;
-        const lines = code.split('\n');
-        const height = lines.length;
-        const width = lines.reduce((prev, cur) => Math.max(prev, cur.length), 0);
-        console.log('result', code);
-        return (
-            <textarea
-                className="mono"
-                ref={this.ref}
-                style={{
-                    height: `${height}em`,
-                    width: `${width}ch`,
-                    margin: '0 auto',
-                    // only block-level elements can be centered; textarea is inline by default
-                    display: 'block',
-                }}
-                value={code}
-                disabled
-            />
-        );
-    }
-
-    rescale() {
-        if (!this.ref.current) {
-            return;
-        }
-        const $el = this.ref.current!;
-        const styles = window.getComputedStyle($el);
-        // find the ratio of code dimensions to the window dimensions
-        const widthRatio = Number(styles.width.split('px')[0]) / window.innerWidth;
-        const minFontSize = 3;
-        const maxFontSize = 18;
-        // if the code is too big for the window, scale the font size down
-        $el.style.fontSize = `${Math.min(
-            maxFontSize,
-            Math.max(minFontSize, Number(styles.fontSize.split('px')[0]) / widthRatio)
-        )}px`;
-        $el.style.height = `${$el.scrollHeight + 5}px`;
-    }
-
-    componentDidMount() {
-        this.resizeListener = () => this.rescale();
-        window.addEventListener('resize', this.resizeListener);
-        this.rescale();
-    }
-
-    componentDidUpdate() {
-        this.rescale();
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.resizeListener);
-    }
-}
 
 class App extends React.Component<{}, State> {
     state = {
@@ -268,6 +97,7 @@ class App extends React.Component<{}, State> {
                         <a href="/">Source</a>
                     </div>
                 </div>
+                {/* TODO some text that explains what this does, and a link to an example output */}
                 <div id="container">
                     {this.state.error != null && <div>Error! {this.state.error}</div>}
                     <h3>JavaScript Code 💻</h3>
@@ -280,6 +110,7 @@ class App extends React.Component<{}, State> {
                     {imageArea}
                     {configStep}
                 </div>
+                {/* result goes outside the container to take the full window width */}
                 {resultStep}
             </>
         );
