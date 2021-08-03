@@ -68,6 +68,18 @@ body {
     font-weight: bold;
     font-size: 1.2em;
     padding-right: 12px;
+    cursor: pointer;
+}
+.config-label:hover {
+    text-decoration: underline #3b22ea;
+}
+.config-label:after {
+    content: ' [?]';
+}
+
+.config-label-help {
+    padding: 0 0 0 2ch;
+    margin: 0;
 }
 
 input[type='range'] {

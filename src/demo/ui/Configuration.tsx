@@ -5,6 +5,7 @@ import {
     MODES,
     modeDescription,
 } from '../algos/common';
+import { ExpandableSpan } from './ExpandableSpan';
 
 const algoModule = import('../algos/entry');
 
@@ -57,13 +58,30 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
     };
 
     render() {
-        // TODO implement loading spinner/text
         const { mode, loading, cutoff, invert } = this.state;
         return (
             <>
                 <h3>Processing Options ⚙</h3>
                 <div>
-                    <span className="config-label">Relevance Metric</span>
+                    <ExpandableSpan
+                        text={<span className="config-label">Relevance Metric</span>}
+                        helpText={
+                            <blockquote className="config-label-help">
+                                The relevance metric determines how we find which
+                                regions to populate with code.
+                                <br />
+                                <b>Intensity:</b> compute r + g + b values at each pixel
+                                and fill in the locations of the highest values.
+                                <br />
+                                <b>Saliency:</b> calculate a local saliency value at
+                                each pixel with{' '}
+                                <a href="https://mmcheng.net/mftp/Papers/SaliencyTPAMI.pdf">
+                                    global contrast detection
+                                </a>{' '}
+                                and put code at the highest locations.
+                            </blockquote>
+                        }
+                    />
                     <br />
                     {MODES.map((m, key) => (
                         <>
@@ -87,7 +105,17 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                     ))}
                 </div>
                 <div>
-                    <span className="config-label">Threshold</span>
+                    <ExpandableSpan
+                        text={<span className="config-label">Threshold</span>}
+                        helpText={
+                            <blockquote className="config-label-help">
+                                The proportion of the image we will target code
+                                coverage. For example, if threshold is 0.3 then we will
+                                attempt to cover 30% of the image with code using the
+                                relevance metric.
+                            </blockquote>
+                        }
+                    />
                     <input
                         type="range"
                         max="0.99"
@@ -103,7 +131,19 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                     <span className="threshold-label">{cutoff}</span>
                 </div>
                 <div>
-                    <span className="config-label">Invert?</span>
+                    <ExpandableSpan
+                        text={<span className="config-label">Invert?</span>}
+                        helpText={
+                            <blockquote className="config-label-help">
+                                If inverting, then instead of taking maximal values from
+                                the relevancy metric, we take minimum values. For
+                                example, if using intensity and threshold of 0.3, then
+                                if you check this box, we will instead cover <i>70%</i>{' '}
+                                of the image with <i>lowest intensity</i>.
+                            </blockquote>
+                        }
+                    />
+
                     <input
                         type="checkbox"
                         checked={invert}
