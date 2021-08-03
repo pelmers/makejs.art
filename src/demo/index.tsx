@@ -104,7 +104,7 @@ class App extends React.Component<{}, State> {
                         <a href="/">Source</a>
                     </div>
                 </div>
-                <div id="container">
+                <div className="container">
                     <blockquote className="intro">
                         Code Shaper is not your typical JavaScript formatter! Instead,
                         it turns your code into pictures. Try it by pasting some code

@@ -3,7 +3,7 @@ body {
     width: 100%;
 }
 
-#container {
+.container {
     max-width: 100%;
     width: 38em;
     margin: auto;
@@ -11,7 +11,7 @@ body {
     padding-bottom: 13px;
 }
 
-#container > div {
+.container > div {
     margin-bottom: 10px;
 }
 
