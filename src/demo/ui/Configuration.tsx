@@ -82,10 +82,9 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                         }
                     />
                     <br />
-                    {MODES.map((m, key) => (
-                        <>
+                    {MODES.map((m) => (
+                        <div key={m}>
                             <input
-                                key={key}
                                 type="radio"
                                 value={m}
                                 name="mode"
@@ -100,7 +99,7 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                             />{' '}
                             {modeDescription(m)}
                             <br />
-                        </>
+                        </div>
                     ))}
                 </div>
                 <div>
