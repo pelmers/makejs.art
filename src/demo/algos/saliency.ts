@@ -140,42 +140,15 @@ export function findRegionsBySaliency(
     }
     const histogram = new CompressedHistogram(colorHistogram);
     const perPixelSaliency: number[] = new Array(canvas.width * canvas.height);
-    let maxSaliency = 1;
     for (let i = 0; i < data.data.length; i += 4) {
         const [r, g, b] = data.data.slice(i, i + 3);
         perPixelSaliency[i / 4] = histogram.saliency(r, g, b);
-        maxSaliency = Math.max(maxSaliency, perPixelSaliency[i / 4]);
     }
     const sortedPixels = perPixelSaliency
         .concat()
         .sort((a, b) => (invert ? a - b : b - a));
     const cutoffValue = sortedPixels[Math.round(cutoffRatio * sortedPixels.length)];
 
-    // TODO remove these lines
-    const newData = new ImageData(
-        new Uint8ClampedArray(canvas.width * canvas.height * 4),
-        canvas.width,
-        canvas.height
-    );
-    for (let i = 0; i < data.data.length; i += 4) {
-        if (perPixelSaliency[i / 4] >= cutoffValue) {
-            newData.data[i] = Math.floor((perPixelSaliency[i / 4] / maxSaliency) * 256);
-            newData.data[i + 1] = Math.floor(
-                (perPixelSaliency[i / 4] / maxSaliency) * 256
-            );
-            newData.data[i + 2] = Math.floor(
-                (perPixelSaliency[i / 4] / maxSaliency) * 256
-            );
-            newData.data[i + 3] = 255;
-        } else {
-            newData.data[i] = 0;
-            newData.data[i + 1] = 0;
-            newData.data[i + 2] = 0;
-            newData.data[i + 3] = 255;
-        }
-    }
-
-    ctx.putImageData(newData, 0, 0);
     return extractRunsByCutoff(data.width, data.height, (row, col) => {
         const i = row * data.width + col;
         return invert

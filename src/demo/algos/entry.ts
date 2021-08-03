@@ -56,15 +56,13 @@ export async function drawCode(
     // maybe have user click which areas to fill in?
     const targetSize = (minCodeSize(tokens) * SIZE_BUFFER_RATIO) / cutoff;
     const { canvas, ctx } = await loadImageToCanvas(imageFileUri, targetSize);
-    console.time('draw');
+    console.time('code shaping');
     // TODO make these a web worker to avoid blocking
     const runs =
         mode === 'saliency'
             ? findRegionsBySaliency(canvas, ctx, cutoff, invert)
             : findRegionsByIntensity(canvas, ctx, cutoff, invert);
-    console.timeEnd('draw');
-    // TODO remove this line
-    document.body.appendChild(canvas);
+    console.timeEnd('code shaping');
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;

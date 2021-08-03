@@ -41,7 +41,6 @@ export class ResultComponent extends React.Component<ResultProps, {}> {
     }
 
     rescale() {
-        console.log('rescale!!');
         if (!this.ref.current) {
             return;
         }
