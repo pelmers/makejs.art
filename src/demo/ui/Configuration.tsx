@@ -48,7 +48,6 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
         const { drawCode } = await algoModule;
         try {
             this.setState({ loading: true });
-            // TODO: then put it out in an output text box
             this.props.onResult(await drawCode(code, image, mode, cutoff, invert));
         } catch (e) {
             this.props.onError(e.message);

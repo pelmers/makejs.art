@@ -104,7 +104,6 @@ class App extends React.Component<{}, State> {
                         <a href="/">Source</a>
                     </div>
                 </div>
-                {/* TODO some text that explains what this does, and a link to an example output */}
                 <div id="container">
                     <blockquote className="intro">
                         Code Shaper is not your typical JavaScript formatter! Instead,

@@ -4,6 +4,10 @@ type ResultProps = {
     code: string;
 };
 
+/**
+ * Component that displays the code output in a textarea.
+ * Automatically scales the font size to try to make it all visible in the client window.
+ */
 export class ResultComponent extends React.Component<ResultProps, {}> {
     ref: React.RefObject<HTMLTextAreaElement> = React.createRef();
     resizeListener: () => void;

@@ -1,8 +1,4 @@
-import {
-    extractRunsByCutoff,
-    DEFAULT_CUTOFF_THRESHOLD,
-    SALIENCY_BUCKETS,
-} from './common';
+import { extractRunsByCutoff, SALIENCY_BUCKETS } from './common';
 
 // @ts-ignore no types provided
 import { Colour } from '../vendor/IsThisColourSimilar/Colour';
