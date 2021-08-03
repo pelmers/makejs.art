@@ -49,7 +49,14 @@ class App extends React.Component<{}, State> {
                         src={this.state.imageFile}
                     ></img>
                     <div>
-                        <button onClick={() => this.setState({ imageFile: undefined })}>
+                        <button
+                            onClick={() =>
+                                this.setState({
+                                    imageFile: undefined,
+                                    result: undefined,
+                                })
+                            }
+                        >
                             Clear Image
                         </button>
                     </div>

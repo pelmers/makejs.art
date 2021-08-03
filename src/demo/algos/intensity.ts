@@ -34,7 +34,6 @@ export function findRegionsByIntensity(
     if (invert) {
         cutoffValue = histogram.length - 1 - cutoffValue;
     }
-    console.log(cutoffValue, cutoff);
     return extractRunsByCutoff(data.width, data.height, (row, col) => {
         const i = row * data.width + col;
         const [r, g, b, a] = data.data.slice(i * 4, (i + 1) * 4);
