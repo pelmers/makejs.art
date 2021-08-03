@@ -8,14 +8,11 @@ body {
     width: 38em;
     margin: auto;
     color: rgba(0, 0, 0, 0.85);
-    padding-top: 13px;
     padding-bottom: 13px;
-    margin-top: 8px;
 }
 
 #container > div {
     margin-bottom: 10px;
-    background-color: white;
 }
 
 #header {
@@ -46,7 +43,8 @@ body {
 }
 
 #code-text {
-    min-height: 300px;
+    min-height: 250px;
+    font-size: 13px;
     background-color: #d5d5d5;
     margin-top: 10px;
     vertical-align: middle;
@@ -59,4 +57,81 @@ body {
 
 .mono {
     font-family: Consolas, Monaco, monospace;
+}
+
+.error {
+    font-size: 2em;
+    color: red;
+}
+
+.config-label {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-right: 12px;
+}
+
+input[type='range'] {
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+.threshold-label {
+    display: inline-block;
+    position: relative;
+    width: 55px;
+    color: white;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 3px;
+    background: #2c3e50;
+    padding: 5px 10px;
+    margin-left: 8px;
+}
+
+.threshold-label:after {
+    position: absolute;
+    top: 8px;
+    left: -7px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-right: 7px solid #2c3e50;
+    border-bottom: 7px solid transparent;
+    content: '';
+}
+
+.loading-spinner {
+    position: relative;
+    left: 50%;
+    margin-left: -40px;
+    width: 80px;
+    height: 80px;
+}
+.loading-spinner:after {
+    content: ' ';
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #3b22ea;
+    border-color: #3b22ea transparent #3b22ea transparent;
+    animation: loading-spinner 1.2s linear infinite;
+}
+@keyframes loading-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-spinner-progress-text {
+    color: #3b22ea;
+    font-weight: bold;
+    text-align: center;
 }

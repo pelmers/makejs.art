@@ -22,6 +22,17 @@ type ConfigProps = {
     onError: (err: string) => void;
 };
 
+function LoadingSpinner(props: { text?: string }) {
+    return (
+        <>
+            <div className="loading-spinner"></div>
+            {props.text && (
+                <div className="loading-spinner-progress-text">{props.text}</div>
+            )}
+        </>
+    );
+}
+
 export class Configuration extends React.Component<ConfigProps, ConfigState> {
     state = {
         cutoff: DEFAULT_CUTOFF_THRESHOLD,
@@ -50,8 +61,10 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
         const { mode, loading, cutoff, invert } = this.state;
         return (
             <>
-                Processing Mode
+                <h3>Processing Options ⚙</h3>
                 <div>
+                    <span className="config-label">Relevance Metric</span>
+                    <br />
                     {MODES.map((m, key) => (
                         <>
                             <input
@@ -69,11 +82,12 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                                 }}
                             />{' '}
                             {modeDescription(m)}
+                            <br />
                         </>
                     ))}
                 </div>
                 <div>
-                    Threshold
+                    <span className="config-label">Threshold</span>
                     <input
                         type="range"
                         max="0.99"
@@ -86,10 +100,10 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                             })
                         }
                     />
-                    {cutoff}
+                    <span className="threshold-label">{cutoff}</span>
                 </div>
                 <div>
-                    Invert?
+                    <span className="config-label">Invert?</span>
                     <input
                         type="checkbox"
                         checked={invert}
@@ -100,9 +114,9 @@ export class Configuration extends React.Component<ConfigProps, ConfigState> {
                 </div>
                 <div>
                     {!loading && (
-                        <button onClick={this.handleSubmit}>Do the thing</button>
+                        <button onClick={this.handleSubmit}>Do the Thing</button>
                     )}
-                    {loading && <>TODO Loading text here</>}
+                    {loading && <LoadingSpinner text="Doing It" />}
                 </div>
             </>
         );

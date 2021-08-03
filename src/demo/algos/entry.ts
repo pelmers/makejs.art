@@ -63,6 +63,8 @@ export async function drawCode(
             ? findRegionsBySaliency(canvas, ctx, cutoff, invert)
             : findRegionsByIntensity(canvas, ctx, cutoff, invert);
     console.timeEnd('draw');
+    // TODO remove this line
+    document.body.appendChild(canvas);
     // Run reshape according to those runs of pixels
     const shapeFn = (i: number) =>
         i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;

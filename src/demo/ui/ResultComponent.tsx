@@ -12,8 +12,10 @@ export class ResultComponent extends React.Component<ResultProps, {}> {
         const { code } = this.props;
         const lines = code.split('\n');
         const height = lines.length;
-        const width = lines.reduce((prev, cur) => Math.max(prev, cur.length), 0);
-        console.log('result', code);
+        // don't count the last line for max width because that's where we put overflow
+        const width = lines
+            .slice(0, lines.length - 1)
+            .reduce((prev, cur) => Math.max(prev, cur.length), 1);
         return (
             <textarea
                 className="mono"
@@ -24,6 +26,9 @@ export class ResultComponent extends React.Component<ResultProps, {}> {
                     margin: '0 auto',
                     // only block-level elements can be centered; textarea is inline by default
                     display: 'block',
+                    whiteSpace: 'pre',
+                    overflowX: 'scroll',
+                    overflowY: 'scroll',
                 }}
                 value={code}
                 disabled
@@ -32,6 +37,7 @@ export class ResultComponent extends React.Component<ResultProps, {}> {
     }
 
     rescale() {
+        console.log('rescale!!');
         if (!this.ref.current) {
             return;
         }

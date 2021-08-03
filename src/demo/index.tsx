@@ -1,5 +1,6 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
+import { AutoPlaySilentVideo } from './ui/AutoPlaySilentVideo';
 import { Configuration } from './ui/Configuration';
 import { ResultComponent } from './ui/ResultComponent';
 
@@ -42,12 +43,17 @@ class App extends React.Component<{}, State> {
         const { codeInput, imageFile, result } = this.state;
         const imageArea =
             imageFile != null ? (
-                <>
-                    <img src={this.state.imageFile}></img>
-                    <button onClick={() => this.setState({ imageFile: undefined })}>
-                        Clear Image
-                    </button>
-                </>
+                <div>
+                    <img
+                        style={{ marginBottom: '0px' }}
+                        src={this.state.imageFile}
+                    ></img>
+                    <div>
+                        <button onClick={() => this.setState({ imageFile: undefined })}>
+                            Clear Image
+                        </button>
+                    </div>
+                </div>
             ) : (
                 <div
                     id="dragdrop"
@@ -66,7 +72,7 @@ class App extends React.Component<{}, State> {
                         this.handleFiles(e.dataTransfer.files);
                     }}
                 >
-                    <h3>Select a photo 📷</h3>
+                    <h3>Select a Photo 📷</h3>
                     <input
                         ref={this.fileInput}
                         type="file"
@@ -91,6 +97,7 @@ class App extends React.Component<{}, State> {
         return (
             <>
                 <div id="header">
+                    <AutoPlaySilentVideo video="/animation.mp4" />
                     <div className="links">
                         {/* TODO fix links */}
                         <a href="/">About</a>
@@ -99,15 +106,23 @@ class App extends React.Component<{}, State> {
                 </div>
                 {/* TODO some text that explains what this does, and a link to an example output */}
                 <div id="container">
-                    {this.state.error != null && <div>Error! {this.state.error}</div>}
+                    <blockquote className="intro">
+                        Code Shaper is not your typical JavaScript formatter! Instead,
+                        it turns your code into pictures. Try it by pasting some code
+                        and loading a picture!
+                    </blockquote>
                     <h3>JavaScript Code 💻</h3>
                     <textarea
                         id="code-text"
+                        className="mono"
                         aria-label="input field for javascript source code"
                         onChange={(e) => this.setState({ codeInput: e.target.value })}
                         value={this.state.codeInput}
                     ></textarea>
                     {imageArea}
+                    {this.state.error != null && (
+                        <div className="error">Error! {this.state.error}</div>
+                    )}
                     {configStep}
                 </div>
                 {/* result goes outside the container to take the full window width */}
