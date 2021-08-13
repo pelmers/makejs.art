@@ -18,3 +18,6 @@ yarn
 yarn build
 yarn jest
 ```
+
+### More Details
+I have published a [blog post](https://pelmers.com/making-javascript-art/) on this project.
