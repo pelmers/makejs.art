@@ -106,9 +106,8 @@ class App extends React.Component<{}, State> {
                 <div id="header">
                     <AutoPlaySilentVideo video="/animation.mp4" />
                     <div className="links">
-                        {/* TODO fix links */}
-                        <a href="/">About</a>
-                        <a href="/">Source</a>
+                        <a href="https://pelmers.com/making-javascript-art/">About</a>
+                        <a href="https://github.com/pelmers/makejs.art">Source</a>
                     </div>
                 </div>
                 <div className="container">
