@@ -24,7 +24,7 @@ yarn jest
 
 I have published a [blog post](https://pelmers.com/making-javascript-art/) on this project.
 
-### Node API
+### [Node API](https://www.npmjs.com/package/makejs.art)
 
 Now you can also use this as a node module to programmatically turn your code into ascii art!
 This will use the node-canvas library to render the provided image to an invisible buffer.
@@ -72,6 +72,7 @@ yarn add makejs.art
 
 **Usage**:
 In `webpack.config.js`:
+
 ```js
 const { MakeJsArtWebpackPlugin } = require('makejs.art');
 module.exports = {
@@ -83,7 +84,7 @@ module.exports = {
             /* mode = intensity | saliency */
             mode: 'intensity',
             /* cutoff = 0.0 - 1.0 */
-            cutoff: 0.5,      
+            cutoff: 0.5,
             /* invert = true | false */
             invert: false,
             /* ignorePatterns = [string | RegExp], if empty all .js assets are modified */
