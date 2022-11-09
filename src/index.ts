@@ -6,16 +6,10 @@ export { WhitespaceMarkerGenerator } from './generator';
 
 type OptionsInputType = {
     imagePath: string;
+    ignorePatterns?: string[];
     cutoff?: number;
     mode?: 'intensity' | 'saliency';
     invert?: boolean;
-};
-
-type OptionsType = {
-    imagePath: string;
-    cutoff: number;
-    mode: 'intensity' | 'saliency';
-    invert: boolean;
 };
 
 export async function makeJsArt(
@@ -36,17 +30,37 @@ export class MakeJsArtWebpackPlugin {
     constructor(private options: OptionsInputType) {}
 
     apply(compiler: webpack.Compiler) {
-        compiler.hooks.assetEmitted.tapAsync(
-            'MakeJsArtWebpackPlugin',
-            async (file, info, callback) => {
-                const { content, source, outputPath } = info;
-                console.log(file, source, outputPath);
-                if (this.options.imagePath) {
-                    const code = await makeJsArt(content.toString(), this.options);
-                    console.log(code);
+        const ignorePatterns = this.options.ignorePatterns || [];
+
+        compiler.hooks.thisCompilation.tap('Replace', (compilation) => {
+            compilation.hooks.processAssets.tapAsync(
+                {
+                    name: 'MakeJsArtWebpackPlugin',
+                    stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
+                },
+                async (assets, callback) => {
+                    // example: https://stackoverflow.com/a/65535329
+                    for (const ass in assets) {
+                        const file = compilation.getAsset(ass)!;
+                        const contents = file.source.source();
+                        const isIgnored = ignorePatterns.some((pattern) =>
+                            file.name.match(pattern)
+                        );
+                        if (!file.name.endsWith('.js') || isIgnored) {
+                            continue;
+                        }
+                        const transformedCode = await makeJsArt(
+                            contents.toString(),
+                            this.options
+                        );
+                        compilation.updateAsset(
+                            ass,
+                            new webpack.sources.RawSource(transformedCode)
+                        );
+                    }
+                    callback();
                 }
-                callback();
-            }
-        );
+            );
+        });
     }
 }

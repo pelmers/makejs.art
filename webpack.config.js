@@ -1,15 +1,31 @@
 const webpack = require('webpack');
 const path = require('path');
+const fs = require('fs');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const nodeExternals = require('webpack-node-externals');
+
+const mode = process.env.NODE_ENV || 'development';
+const useArtPlugin =
+    mode !== 'development' && fs.existsSync(path.resolve(__dirname, 'dist/index.js'));
+const artPlugins = [];
+if (useArtPlugin) {
+    const artPlugin = require('./dist/index.js').MakeJsArtWebpackPlugin;
+    artPlugins.push(
+        new artPlugin({
+            imagePath: './src/__tests__/testlogo.png',
+            cutoff: 0.4,
+            invert: true,
+        })
+    );
+}
 
 const ROOT = path.resolve(__dirname, 'src');
 const DESTINATION = path.resolve(__dirname, 'dist');
 
 const shared = {
     context: ROOT,
-    mode: process.env.BUILD_MODE || 'development',
+    mode: 'development',
 
     output: {
         filename: '[name].bundle.js',
@@ -43,7 +59,7 @@ const shared = {
 
     devtool: 'cheap-module-source-map',
     devServer: {},
-}
+};
 
 const clientConfig = {
     ...shared,
@@ -67,10 +83,10 @@ const clientConfig = {
             failOnError: true,
             allowAsyncCycles: false,
         }),
-        new BundleAnalyzerPlugin(),
+        ...artPlugins,
+        // new BundleAnalyzerPlugin(),
     ],
-}
-
+};
 
 const serverConfig = {
     ...shared,
@@ -80,10 +96,11 @@ const serverConfig = {
     output: {
         filename: '[name].js',
         path: DESTINATION,
-        libraryTarget: "commonjs2",
+        libraryTarget: 'commonjs2',
     },
+    plugins: artPlugins,
     target: 'node',
-    externals: [nodeExternals()]
-}
+    externals: [nodeExternals()],
+};
 
 module.exports = [clientConfig, serverConfig];

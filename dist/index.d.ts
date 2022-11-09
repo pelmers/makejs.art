@@ -3,6 +3,7 @@ export { reshape, minCodeSize, parseTokens } from './reshape';
 export { WhitespaceMarkerGenerator } from './generator';
 declare type OptionsInputType = {
     imagePath: string;
+    ignorePatterns?: string[];
     cutoff?: number;
     mode?: 'intensity' | 'saliency';
     invert?: boolean;
