@@ -2,18 +2,14 @@ const webpack = require('webpack');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CircularDependencyPlugin = require('circular-dependency-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 const ROOT = path.resolve(__dirname, 'src');
 const DESTINATION = path.resolve(__dirname, 'dist');
 
-module.exports = {
+const shared = {
     context: ROOT,
-
     mode: process.env.BUILD_MODE || 'development',
-    entry: {
-        demo: './demo/index.tsx',
-        index: './index.ts',
-    },
 
     output: {
         filename: '[name].bundle.js',
@@ -24,7 +20,6 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js'],
         modules: [ROOT, 'node_modules'],
     },
-
     module: {
         rules: [
             /****************
@@ -45,6 +40,18 @@ module.exports = {
             },
         ],
     },
+
+    devtool: 'cheap-module-source-map',
+    devServer: {},
+}
+
+const clientConfig = {
+    ...shared,
+
+    entry: {
+        demo: './demo/index.tsx',
+    },
+
     // https://stackoverflow.com/a/64553486
     plugins: [
         // fix "process is not defined" error:
@@ -62,7 +69,21 @@ module.exports = {
         }),
         new BundleAnalyzerPlugin(),
     ],
+}
 
-    devtool: 'cheap-module-source-map',
-    devServer: {},
-};
+
+const serverConfig = {
+    ...shared,
+    entry: {
+        index: './index.ts',
+    },
+    output: {
+        filename: '[name].js',
+        path: DESTINATION,
+        libraryTarget: "commonjs2",
+    },
+    target: 'node',
+    externals: [nodeExternals()]
+}
+
+module.exports = [clientConfig, serverConfig];

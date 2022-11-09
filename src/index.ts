@@ -34,7 +34,6 @@ export async function makeJsArt(
 
 export class MakeJsArtWebpackPlugin {
     constructor(private options: OptionsInputType) {}
-    // ISSUE: the reshape uses canvas
 
     apply(compiler: webpack.Compiler) {
         compiler.hooks.assetEmitted.tapAsync(

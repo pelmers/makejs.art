@@ -24,6 +24,34 @@ yarn jest
 
 I have published a [blog post](https://pelmers.com/making-javascript-art/) on this project.
 
+### Node API
+Now you can also use this as a node module to programmatically turn your code into ascii art!
+This will use the node-canvas library to render the provided image to an invisible buffer.
+
+**Install**:
+```
+npm install makejs.art
+OR
+yarn add makejs.art
+```
+
+**Usage**:
+```js
+import {makeJsArt} from 'makejs.art';
+
+const source = `
+  const a = 1;
+  const b = 2;
+  const c = a + b;
+  console.log(c);
+`;
+
+const art = await makeJsArt(
+    source,
+    {imagePath: 'path/to/image.png', mode: 'intensity', cutoff: 0.5, invert: false}
+);
+```
+
 ### Webpack Plugin API
 
 Coming soon

@@ -29943,7 +29943,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-const algoModule = Promise.all(/*! import() */[__webpack_require__.e("vendors-node_modules_babel_parser_lib_index_js-node_modules_lru-cache_index_js"), __webpack_require__.e("vendors-node_modules_babel_generator_lib_index_js"), __webpack_require__.e("algos_drawCode_ts"), __webpack_require__.e("algos_entry-dom_ts-generator_ts-reshape_ts")]).then(__webpack_require__.bind(__webpack_require__, /*! ../../algos/entry-dom */ "./algos/entry-dom.ts"));
+const algoModule = Promise.all(/*! import() */[__webpack_require__.e("vendors-node_modules_babel_generator_lib_index_js-node_modules_babel_parser_lib_index_js-node-7204d0"), __webpack_require__.e("algos_entry-dom_ts")]).then(__webpack_require__.bind(__webpack_require__, /*! ../../algos/entry-dom */ "./algos/entry-dom.ts"));
 function LoadingSpinner(props) {
     return (react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null,
         react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { className: "loading-spinner" }),
