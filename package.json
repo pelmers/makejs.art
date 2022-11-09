@@ -1,6 +1,6 @@
 {
     "name": "makejs.art",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "dist/index.js",
     "repository": "git@github.com:pelmers/makejs.art.git",
     "author": "Peter Elmers <peter.elmers@yahoo.com>",
