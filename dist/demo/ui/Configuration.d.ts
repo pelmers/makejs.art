@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModeType } from '../algos/common';
+import { ModeType } from '../../constants';
 declare type ConfigState = {
     cutoff?: number;
     mode?: ModeType;

@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 const ROOT = path.resolve(__dirname, 'src');
 const DESTINATION = path.resolve(__dirname, 'dist');
@@ -53,8 +55,14 @@ module.exports = {
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
         }),
+        new CircularDependencyPlugin({
+            exclude: /node_modules/,
+            failOnError: true,
+            allowAsyncCycles: false,
+        }),
+        new BundleAnalyzerPlugin(),
     ],
 
-    devtool: 'inline-cheap-module-source-map',
+    devtool: 'cheap-module-source-map',
     devServer: {},
 };

@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-    ModeType,
-    DEFAULT_CUTOFF_THRESHOLD,
-    MODES,
-    modeDescription,
-} from '../../algos/common';
+import { modeDescription } from '../../algos/common';
+import { ModeType, DEFAULT_CUTOFF_THRESHOLD, MODES } from '../../constants';
 import { ExpandableSpan } from './ExpandableSpan';
 
 const algoModule = import('../../algos/entry-dom');

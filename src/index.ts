@@ -1,5 +1,5 @@
 import * as webpack from 'webpack';
-import { DEFAULT_CUTOFF_THRESHOLD } from './algos/common';
+import { DEFAULT_CUTOFF_THRESHOLD } from './constants';
 
 export { reshape, minCodeSize, parseTokens } from './reshape';
 export { WhitespaceMarkerGenerator } from './generator';

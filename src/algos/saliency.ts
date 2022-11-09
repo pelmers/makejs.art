@@ -1,4 +1,5 @@
-import { CanvasType, extractRunsByCutoff, SALIENCY_BUCKETS } from './common';
+import { SALIENCY_BUCKETS, CanvasType } from '../constants';
+import { extractRunsByCutoff } from './common';
 
 // @ts-ignore no types provided
 import { Colour } from '../vendor/IsThisColourSimilar/Colour';

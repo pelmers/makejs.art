@@ -1,10 +1,5 @@
-import { parse } from '@babel/parser';
-import { WhitespaceMarkerGenerator } from '../generator';
-import { minCodeSize, parseTokens, reshape } from '../reshape';
-import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../constants';
-import { findRegionsBySaliency } from './saliency';
-import { findRegionsByIntensity } from './intensity';
-import { drawCodeCommon, ModeType, SIZE_BUFFER_RATIO } from './common';
+import { DEFAULT_HEIGHT_WIDTH_RATIO, ModeType } from '../constants';
+import { drawCodeCommon } from './drawCode';
 
 const pica = import('pica');
 

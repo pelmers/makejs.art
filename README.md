@@ -13,6 +13,8 @@ Works best with images that have a well-defined subject.
 ### Develop
 
 ```
+git submodule init
+git submodule update
 yarn
 yarn build
 yarn jest

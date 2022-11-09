@@ -1,6 +1,6 @@
 import { createCanvas, loadImage } from 'node-canvas';
-import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../constants';
-import { ModeType, drawCodeCommon } from './common';
+import { DEFAULT_HEIGHT_WIDTH_RATIO, ModeType } from '../constants';
+import { drawCodeCommon } from './drawCode';
 
 async function loadImageToCanvas(imageFilePath: string, targetSize: number) {
     const image = await loadImage(imageFilePath);
