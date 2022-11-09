@@ -1,4 +1,4 @@
-import { extractRunsByCutoff, SALIENCY_BUCKETS } from './common';
+import { CanvasType, extractRunsByCutoff, SALIENCY_BUCKETS } from './common';
 
 // @ts-ignore no types provided
 import { Colour } from '../vendor/IsThisColourSimilar/Colour';
@@ -125,7 +125,7 @@ class CompressedHistogram {
 // M.-M. Cheng et al., "Global Contrast based Salient Region Detection", in IEEE CVPR, 2011
 // https://mmcheng.net/mftp/Papers/SaliencyTPAMI.pdf
 export function findRegionsBySaliency(
-    canvas: HTMLCanvasElement,
+    canvas: CanvasType,
     ctx: CanvasRenderingContext2D,
     cutoffRatio: number,
     invert: boolean

@@ -28,7 +28,7 @@ class App extends React.Component<{}, State> {
         imageFile: undefined,
         error: undefined,
     };
-    fileInput: React.RefObject<HTMLInputElement>;
+    fileInput: React.RefObject<HTMLInputElement> = React.createRef();
 
     handleFiles = (files: FileList) => {
         const f = files[0];
@@ -112,9 +112,9 @@ class App extends React.Component<{}, State> {
                 </div>
                 <div className="container">
                     <blockquote className="intro">
-                        This is not your typical JavaScript formatter! Instead,
-                        it turns your code into pictures. Try it by pasting some code
-                        and loading a picture!
+                        This is not your typical JavaScript formatter! Instead, it turns
+                        your code into pictures. Try it by pasting some code and loading
+                        a picture!
                     </blockquote>
                     <h3>JavaScript Code 💻</h3>
                     <textarea

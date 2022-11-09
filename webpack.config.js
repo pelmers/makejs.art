@@ -10,6 +10,7 @@ module.exports = {
     mode: process.env.BUILD_MODE || 'development',
     entry: {
         demo: './demo/index.tsx',
+        index: './index.ts',
     },
 
     output: {

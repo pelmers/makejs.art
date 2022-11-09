@@ -4,10 +4,10 @@ import {
     DEFAULT_CUTOFF_THRESHOLD,
     MODES,
     modeDescription,
-} from '../algos/common';
+} from '../../algos/common';
 import { ExpandableSpan } from './ExpandableSpan';
 
-const algoModule = import('../algos/entry');
+const algoModule = import('../../algos/entry-dom');
 
 type ConfigState = {
     cutoff?: number;

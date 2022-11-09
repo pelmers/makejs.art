@@ -1,4 +1,4 @@
-import { extractRunsByCutoff, INTENSITY_RANGE } from './common';
+import { CanvasType, extractRunsByCutoff, INTENSITY_RANGE } from './common';
 
 // Return consecutive indices (row * width + col) where code should be placed
 // How does it work?
@@ -6,7 +6,7 @@ import { extractRunsByCutoff, INTENSITY_RANGE } from './common';
 // Then I make a histogram and find the cutoff value above which there are image size * INTENSITY_CUTOFF pixels
 // Finally go through the image again and mark consecutive runs of such pixels
 export function findRegionsByIntensity(
-    canvas: HTMLCanvasElement,
+    canvas: CanvasType,
     ctx: CanvasRenderingContext2D,
     cutoffRatio: number,
     invert: boolean

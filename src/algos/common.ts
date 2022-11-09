@@ -1,52 +1,66 @@
 import { parse } from '@babel/parser';
-import { WhitespaceMarkerGenerator } from '../../generator';
-import { minCodeSize, parseTokens, reshape } from '../../reshape';
-import { DEFAULT_HEIGHT_WIDTH_RATIO } from '../../constants';
-import { findRegionsBySaliency } from './saliency';
+import { Canvas } from 'node-canvas';
+import { WhitespaceMarkerGenerator } from '../generator';
+import { parseTokens, minCodeSize, reshape } from '../reshape';
 import { findRegionsByIntensity } from './intensity';
-import { ModeType, SIZE_BUFFER_RATIO, DEFAULT_CUTOFF_THRESHOLD } from './common';
+import { findRegionsBySaliency } from './saliency';
 
-const pica = import('pica');
+export const DEFAULT_CUTOFF_THRESHOLD = 0.3;
+// Intensity values are sum of r, g, b at each pixel
+export const INTENSITY_RANGE = 1 + 255 * 3;
+// Resize images to accomodate imperfect fill
+export const SIZE_BUFFER_RATIO = 0.95;
+// 12 is value referenced in Cheng '11
+export const SALIENCY_BUCKETS = 12;
 
-// Load the given image uri to an invisible canvas and return the canvas and its 2d context
-// Also resize the picture to make its pixel count as close to targetSize as possible
-async function loadImageToCanvas(imageFileUri: string, targetSize: number) {
-    // First load the image onto an invisible canvas
-    const source = document.createElement('canvas');
-    const ctx = source.getContext('2d')!;
-    await new Promise<void>((resolve, reject) => {
-        const handler = () => {
-            source.width = Math.floor(image.width);
-            source.height = Math.floor(image.height);
-            ctx.drawImage(image, 0, 0, source.width, source.height);
-            resolve();
-        };
-        const image = new Image();
-        image.onload = handler;
-        image.onerror = reject;
-        image.src = imageFileUri;
-    });
-    const target = document.createElement('canvas');
-    // Find the ratio to get from source dimensions to target size
-    // math check: e.g. target = 16, s.w = s.h = 2, then ratio = 2 as expected
-    const ratio = Math.sqrt(targetSize / (source.width * source.height));
-    target.width = Math.round(
-        source.width * ratio * Math.sqrt(DEFAULT_HEIGHT_WIDTH_RATIO)
-    );
-    target.height = Math.round(
-        (source.height * ratio) / Math.sqrt(DEFAULT_HEIGHT_WIDTH_RATIO)
-    );
-    const resizer = (await pica).default();
-    await resizer.resize(source, target);
-    return { canvas: target, ctx: target.getContext('2d')! };
+export const MODES = ['intensity', 'saliency'] as const;
+export type ModeType = typeof MODES[number];
+export type CanvasType = Canvas | HTMLCanvasElement;
+
+export function modeDescription(mode: ModeType): string {
+    return {
+        intensity: 'Intensity (faster)',
+        saliency: 'Saliency (slower)',
+    }[mode];
 }
 
-export async function drawCode(
+export function extractRunsByCutoff(
+    width: number,
+    height: number,
+    passesCutoff: (row: number, column: number) => boolean
+) {
+    // compute 'runs' of pixels > cutoff in the image rows to use as line widths
+    const runs: number[][] = [];
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+            const i = row * width + col;
+            if (passesCutoff(row, col)) {
+                // Decide whether we're still on the last run, or make a new one
+                if (
+                    runs.length > 0 &&
+                    col > 0 &&
+                    runs[runs.length - 1][runs[runs.length - 1].length - 1] === i - 1
+                ) {
+                    runs[runs.length - 1].push(i);
+                } else {
+                    runs.push([i]);
+                }
+            }
+        }
+    }
+    return runs;
+}
+
+export async function drawCodeCommon(
     code: string,
     imageFileUri: string,
     mode: ModeType,
     cutoff: number,
-    invert: boolean
+    invert: boolean,
+    loadImageToCanvas: (
+        imageFileUri: string,
+        targetSize: number
+    ) => Promise<{ canvas: CanvasType; ctx: CanvasRenderingContext2D }>
 ): Promise<string> {
     const genCode = new WhitespaceMarkerGenerator(parse(code)).generate().code;
     const tokens = parseTokens(genCode);

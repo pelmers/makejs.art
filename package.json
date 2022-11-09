@@ -1,13 +1,13 @@
 {
     "name": "makejs.art",
     "version": "1.0.0",
-    "main": "dist/index.js",
+    "main": "dist/index.bundle.js",
     "repository": "git@github.com:pelmers/makejs.art.git",
     "author": "Peter Elmers <peter.elmers@yahoo.com>",
     "license": "MIT",
     "scripts": {
         "build": "webpack --config webpack.config.js",
-        "format": "prettier --config .prettierrc --ignore-path .gitignore --write '.' '!**/fixtures/**/*' '!**/vendor/**/*'"
+        "format": "prettier --config .prettierrc --ignore-path .gitignore --write '.' '!**/fixtures/**/*' '!**/vendor/**/*' '!dist/**/*'"
     },
     "devDependencies": {
         "@babel/generator": "^7.14.8",
@@ -20,6 +20,7 @@
         "buffer": "^6.0.3",
         "jest": "^27.0.6",
         "lru-cache": "^6.0.0",
+        "nan": "^2.17.0",
         "pica": "^7.1.0",
         "prettier": "^2.2.1",
         "process": "^0.11.10",
@@ -33,5 +34,8 @@
         "typescript": "^4.2.4",
         "webpack": "^5.36.2",
         "webpack-cli": "^4.6.0"
+    },
+    "dependencies": {
+        "node-canvas": "^2.9.0"
     }
 }
