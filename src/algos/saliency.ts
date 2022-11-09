@@ -1,7 +1,6 @@
 import { SALIENCY_BUCKETS, CanvasType } from '../constants';
 import { extractRunsByCutoff } from './common';
 
-// @ts-ignore no types provided
 import { Colour } from '../vendor/IsThisColourSimilar/Colour';
 import LRUCache from 'lru-cache';
 
@@ -33,12 +32,13 @@ const indexToColor: [number, number, number][] = new Array(
 
 const rgbCache = new LRUCache({ max: 2 * Math.pow(SALIENCY_BUCKETS, 3) });
 
-function rgb2lab(r: number, g: number, b: number) {
+function rgb2lab(r: number, g: number, b: number): number[] {
     const key = [r, g, b].join(' ');
-    const res = rgbCache.get(key);
+    const res = rgbCache.get(key) as number[];
     if (res != null) {
         return res;
     } else {
+        // @ts-ignore no types provided
         const lab = Colour.rgba2lab(r, g, b);
         rgbCache.set(key, lab);
         return lab;
@@ -55,6 +55,7 @@ const diff = (
 ) => {
     const [l1, a1, b1] = rgb2lab(r1, g1, blu1);
     const [l2, a2, b2] = rgb2lab(r2, g2, blu2);
+    // @ts-ignore no types provided
     return Colour.deltaE00(l1, a1, b1, l2, a2, b2);
 };
 
@@ -88,6 +89,7 @@ class CompressedHistogram {
                 ({ originalIndex }, idx) => {
                     const [r2, g2, blu2] = indexToColor[originalIndex];
                     const [l2, a2, b2] = rgb2lab(r2, g2, blu2);
+                    // @ts-ignore no types provided
                     return { delta: Colour.deltaE00(l1, a1, b1, l2, a2, b2), idx };
                 }
             )) {

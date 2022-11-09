@@ -57,7 +57,10 @@ function loadImageToCanvas(imageFileUri, targetSize) {
 }
 function drawCode(code, imageFileUri, mode, cutoff, invert) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0,_drawCode__WEBPACK_IMPORTED_MODULE_1__.drawCodeCommon)(code, imageFileUri, mode, cutoff, invert, loadImageToCanvas);
+        console.time('code shaping');
+        const result = yield (0,_drawCode__WEBPACK_IMPORTED_MODULE_1__.drawCodeCommon)(code, imageFileUri, mode, cutoff, invert, loadImageToCanvas);
+        console.timeEnd('code shaping');
+        return result;
     });
 }
 // improvement idea: https://dahtah.github.io/imager/foreground_background.html#k-nearest-neighbour-approach

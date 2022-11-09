@@ -43,7 +43,17 @@ export async function drawCode(
     cutoff: number,
     invert: boolean
 ): Promise<string> {
-    return drawCodeCommon(code, imageFileUri, mode, cutoff, invert, loadImageToCanvas);
+    console.time('code shaping');
+    const result = await drawCodeCommon(
+        code,
+        imageFileUri,
+        mode,
+        cutoff,
+        invert,
+        loadImageToCanvas
+    );
+    console.timeEnd('code shaping');
+    return result;
 }
 
 // improvement idea: https://dahtah.github.io/imager/foreground_background.html#k-nearest-neighbour-approach

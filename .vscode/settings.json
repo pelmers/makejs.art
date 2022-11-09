@@ -1,5 +1,7 @@
 {
     "search.exclude": {
-        "**/dist": true
+        "**/dist": true,
+        "**/fixtures/d3.v7.min.js": true,
+        "**/fixtures/lodash.js": true
     }
 }

@@ -405,12 +405,10 @@ function drawCodeCommon(code, imageFileUri, mode, cutoff, invert, loadImageToCan
         // maybe have user click which areas to fill in?
         const targetSize = ((0,_reshape__WEBPACK_IMPORTED_MODULE_3__.minCodeSize)(tokens) * _constants__WEBPACK_IMPORTED_MODULE_1__.SIZE_BUFFER_RATIO) / cutoff;
         const { canvas, ctx } = yield loadImageToCanvas(imageFileUri, targetSize);
-        console.time('code shaping');
         // TODO make these a web worker to avoid blocking
         const runs = mode === 'saliency'
             ? (0,_saliency__WEBPACK_IMPORTED_MODULE_5__.findRegionsBySaliency)(canvas, ctx, cutoff, invert)
             : (0,_intensity__WEBPACK_IMPORTED_MODULE_4__.findRegionsByIntensity)(canvas, ctx, cutoff, invert);
-        console.timeEnd('code shaping');
         // Run reshape according to those runs of pixels
         const shapeFn = (i) => i < runs.length ? runs[i].length : Number.MAX_SAFE_INTEGER;
         const codeSegments = (0,_reshape__WEBPACK_IMPORTED_MODULE_3__.reshape)(tokens, shapeFn);
@@ -529,7 +527,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lru_cache__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lru_cache__WEBPACK_IMPORTED_MODULE_3__);
 
 
-// @ts-ignore no types provided
 
 
 // Retain the top-n histogram buckets to reach THRESHOLD coverage of the picture.
@@ -560,6 +557,7 @@ function rgb2lab(r, g, b) {
         return res;
     }
     else {
+        // @ts-ignore no types provided
         const lab = _vendor_IsThisColourSimilar_Colour__WEBPACK_IMPORTED_MODULE_2__.Colour.rgba2lab(r, g, b);
         rgbCache.set(key, lab);
         return lab;
@@ -568,6 +566,7 @@ function rgb2lab(r, g, b) {
 const diff = (r1, g1, blu1, r2, g2, blu2) => {
     const [l1, a1, b1] = rgb2lab(r1, g1, blu1);
     const [l2, a2, b2] = rgb2lab(r2, g2, blu2);
+    // @ts-ignore no types provided
     return _vendor_IsThisColourSimilar_Colour__WEBPACK_IMPORTED_MODULE_2__.Colour.deltaE00(l1, a1, b1, l2, a2, b2);
 };
 class CompressedHistogram {
@@ -598,6 +597,7 @@ class CompressedHistogram {
             for (const { delta, idx } of this.compressed.map(({ originalIndex }, idx) => {
                 const [r2, g2, blu2] = indexToColor[originalIndex];
                 const [l2, a2, b2] = rgb2lab(r2, g2, blu2);
+                // @ts-ignore no types provided
                 return { delta: _vendor_IsThisColourSimilar_Colour__WEBPACK_IMPORTED_MODULE_2__.Colour.deltaE00(l1, a1, b1, l2, a2, b2), idx };
             })) {
                 if (delta < smallestDelta) {

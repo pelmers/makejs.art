@@ -27741,28 +27741,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "minCodeSize": () => (/* reexport safe */ _reshape__WEBPACK_IMPORTED_MODULE_1__.minCodeSize),
 /* harmony export */   "parseTokens": () => (/* reexport safe */ _reshape__WEBPACK_IMPORTED_MODULE_1__.parseTokens),
 /* harmony export */   "WhitespaceMarkerGenerator": () => (/* reexport safe */ _generator__WEBPACK_IMPORTED_MODULE_2__.WhitespaceMarkerGenerator),
+/* harmony export */   "makeJsArt": () => (/* binding */ makeJsArt),
 /* harmony export */   "MakeJsArtWebpackPlugin": () => (/* binding */ MakeJsArtWebpackPlugin)
 /* harmony export */ });
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./constants.ts");
 /* harmony import */ var _reshape__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reshape */ "./reshape.ts");
 /* harmony import */ var _generator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./generator */ "./generator.ts");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 
 
+function makeJsArt(code, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { cutoff, mode, invert, imagePath } = Object.assign({ cutoff: options.cutoff || _constants__WEBPACK_IMPORTED_MODULE_0__.DEFAULT_CUTOFF_THRESHOLD, mode: options.mode || 'intensity', invert: options.invert || false }, options);
+        const { drawCode } = yield Promise.all(/*! import() */[__webpack_require__.e("vendors-node_modules_babel_parser_lib_index_js-node_modules_lru-cache_index_js"), __webpack_require__.e("algos_drawCode_ts"), __webpack_require__.e("algos_common_ts-algos_entry-node_ts")]).then(__webpack_require__.bind(__webpack_require__, /*! ./algos/entry-node */ "./algos/entry-node.ts"));
+        return drawCode(code, imagePath, mode, cutoff, invert);
+    });
+}
 class MakeJsArtWebpackPlugin {
-    constructor(options = {}) {
+    constructor(options) {
         this.options = options;
-        this.options.cutoff = options.cutoff || _constants__WEBPACK_IMPORTED_MODULE_0__.DEFAULT_CUTOFF_THRESHOLD;
-        this.options.mode = options.mode || 'intensity';
-        this.options.invert = options.invert || false;
-        const algoModule = Promise.all(/*! import() */[__webpack_require__.e("vendors-node_modules_babel_parser_lib_index_js-node_modules_lru-cache_index_js"), __webpack_require__.e("algos_drawCode_ts"), __webpack_require__.e("algos_common_ts-algos_entry-node_ts")]).then(__webpack_require__.bind(__webpack_require__, /*! ./algos/entry-node */ "./algos/entry-node.ts"));
     }
     // ISSUE: the reshape uses canvas
     apply(compiler) {
-        compiler.hooks.emit.tapAsync('MakeJsArtWebpackPlugin', (compilation, callback) => {
-            const { assets } = compilation;
+        compiler.hooks.assetEmitted.tapAsync('MakeJsArtWebpackPlugin', (file, info, callback) => __awaiter(this, void 0, void 0, function* () {
+            const { content, source, outputPath } = info;
+            console.log(file, source, outputPath);
+            if (this.options.imagePath) {
+                const code = yield makeJsArt(content.toString(), this.options);
+                console.log(code);
+            }
             callback();
-        });
+        }));
     }
 }
 

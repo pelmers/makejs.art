@@ -4,28 +4,48 @@ import { DEFAULT_CUTOFF_THRESHOLD } from './constants';
 export { reshape, minCodeSize, parseTokens } from './reshape';
 export { WhitespaceMarkerGenerator } from './generator';
 
-type OptionsType = {
-    imagePath?: string;
+type OptionsInputType = {
+    imagePath: string;
     cutoff?: number;
     mode?: 'intensity' | 'saliency';
     invert?: boolean;
 };
 
-export class MakeJsArtWebpackPlugin {
-    constructor(private options: OptionsType = {}) {
-        this.options.cutoff = options.cutoff || DEFAULT_CUTOFF_THRESHOLD;
-        this.options.mode = options.mode || 'intensity';
-        this.options.invert = options.invert || false;
+type OptionsType = {
+    imagePath: string;
+    cutoff: number;
+    mode: 'intensity' | 'saliency';
+    invert: boolean;
+};
 
-        const algoModule = import('./algos/entry-node');
-    }
+export async function makeJsArt(
+    code: string,
+    options: OptionsInputType
+): Promise<string> {
+    const { cutoff, mode, invert, imagePath } = {
+        cutoff: options.cutoff || DEFAULT_CUTOFF_THRESHOLD,
+        mode: options.mode || 'intensity',
+        invert: options.invert || false,
+        ...options,
+    };
+    const { drawCode } = await import('./algos/entry-node');
+    return drawCode(code, imagePath, mode, cutoff, invert);
+}
+
+export class MakeJsArtWebpackPlugin {
+    constructor(private options: OptionsInputType) {}
     // ISSUE: the reshape uses canvas
 
     apply(compiler: webpack.Compiler) {
-        compiler.hooks.emit.tapAsync(
+        compiler.hooks.assetEmitted.tapAsync(
             'MakeJsArtWebpackPlugin',
-            (compilation, callback) => {
-                const { assets } = compilation;
+            async (file, info, callback) => {
+                const { content, source, outputPath } = info;
+                console.log(file, source, outputPath);
+                if (this.options.imagePath) {
+                    const code = await makeJsArt(content.toString(), this.options);
+                    console.log(code);
+                }
                 callback();
             }
         );
