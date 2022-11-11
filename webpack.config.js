@@ -25,7 +25,7 @@ const DESTINATION = path.resolve(__dirname, 'dist');
 
 const shared = {
     context: ROOT,
-    mode: 'development',
+    mode,
 
     output: {
         filename: '[name].bundle.js',
