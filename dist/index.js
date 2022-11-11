@@ -1,1 +1,405 @@
-(()=>{"use strict";var e,t={742:(e,t,n)=>{n.d(t,{wN:()=>r,lR:()=>s,JK:()=>a,xO:()=>c,_t:()=>i,Ro:()=>p,yU:()=>u,p$:()=>l});const o="871dacbf-674c",r=` /*${o}*/ `,s=` /*opt-${o}*/ `,a=` /*ubn-${o}*/ `,c=1.7,i=.3,p=766,u=.95,l=12},709:(e,t,n)=>{n.d(t,{u:()=>s});const o=require("@babel/generator");var r=n(742);class s extends o.CodeGenerator{constructor(e){super(e,{compact:!0,comments:!1})}generate(){const e=this._generator,t=e.word.bind(e);e.word=n=>{t(n),["return","break","continue","async","throw","yield","await"].includes(n)&&e._unbreakableSpace()};const n=e.UnaryExpression.bind(e);e.UnaryExpression=t=>{!("operator"in t)||"+"!==t.operator&&"-"!==t.operator||e._space(),n(t)};const o=e.UpdateExpression.bind(e);e.UpdateExpression=t=>{let n=!1;"prefix"in t&&t.prefix?e._space():n=!0,o(t),n&&e._space()},e.space=(t=!1)=>{e._buf.hasContent()&&!e.endsWith(" ")&&!e.endsWith("\n")||t?e._space():e._optionalSpace()},e._space=()=>{e._append(r.wN,!0)},e._optionalSpace=()=>{e._append(r.lR,!0)},e._unbreakableSpace=()=>{e._append(r.JK,!0)};const s=e.token.bind(e);return e.token=t=>{"=>"===t&&e._unbreakableSpace(),s(t),e._optionalSpace()},super.generate()}}},696:(e,t,n)=>{n.d(t,{rX:()=>s,jt:()=>p,XL:()=>u});var o=n(742);const r=Number.MAX_SAFE_INTEGER;function s(e){return e.map(c).reduce(((e,t)=>e+t.length),0)}function a(e){return"text"in e?e.text.length:"opt"===e.space?0:1}function c(e){return"text"in e?e.text:"opt"===e.space?"":" "}function i(e){return"space"in e&&"ubn"===e.space}function p(e){const t=[];for(const n of e.split(o.JK)){const e=n.split(o.wN);for(const n of e){const e=n.split(o.lR);for(const n of e)t.push({text:n}),t.push({space:"opt"});t.push({space:"req"})}t.push({space:"ubn"})}return function(e){const t=(e,t)=>{if("space"in e&&"space"in t)return"ubn"===e.space||"ubn"===t.space?"ubn":"req"===e.space||"req"===t.space?"req":"opt";throw new Error("unreachable statement")},n=[];for(let o=0;o<e.length;o++){const r=n[n.length-1],s=e[o];"text"in s&&""===s.text||(null==r?n.push(s):"space"in r&&"space"in s?r.space=t(r,s):n.push(s))}return n}(t)}function u(e,t){const n=e=>Math.min(r,t(e)),o=[[]];let p=0;for(let t=0;t<e.length;t++){const r=e[t],s=o.length-1,c=n(s);if(0===p||i(r)||"text"in r)o[s].push(r),p+=a(r);else{let n=0;for(let o=t+1;o<e.length&&(!("space"in e[o])||i(e[o]));o++)n+=a(e[o]);p+n<=c?(o[s].push(r),p+=a(r)):(o.push([{space:"opt"}]),p=0)}}for(let e=0;e<o.length;e++){const t=o[e];if(n(e)===r)continue;let a=Math.round(n(e)-s(t));const i=t.slice(0,t.length-1).map(((e,t)=>({t:e,idx:t}))).filter((({t:e})=>"space"in e)).map((({idx:e})=>e));for(;i.length>0&&a>0;){const e=i[Math.floor(i.length*Math.random())];t[e]={text:`${c(t[e])} `},a--}}return o.map((e=>e.map(c).join("")))}},604:e=>{e.exports=require("@babel/parser")},8:e=>{e.exports=require("lru-cache")},960:e=>{e.exports=require("node-canvas")}},n={};function o(e){var r=n[e];if(void 0!==r)return r.exports;var s=n[e]={exports:{}};return t[e](s,s.exports,o),s.exports}o.m=t,o.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return o.d(t,{a:t}),t},o.d=(e,t)=>{for(var n in t)o.o(t,n)&&!o.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:t[n]})},o.f={},o.e=e=>Promise.all(Object.keys(o.f).reduce(((t,n)=>(o.f[n](e,t),t)),[])),o.u=e=>e+".js",o.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),o.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},e={826:1},o.f.require=(t,n)=>{e[t]||(t=>{var n=t.modules,r=t.ids,s=t.runtime;for(var a in n)o.o(n,a)&&(o.m[a]=n[a]);s&&s(o);for(var c=0;c<r.length;c++)e[r[c]]=1})(require("./"+o.u(t)))};var r={};(()=>{o.r(r),o.d(r,{MakeJsArtWebpackPlugin:()=>i,WhitespaceMarkerGenerator:()=>s.u,makeJsArt:()=>c,minCodeSize:()=>n.rX,parseTokens:()=>n.jt,reshape:()=>n.XL});const e=require("webpack");var t=o(742),n=o(696),s=o(709),a=function(e,t,n,o){return new(n||(n=Promise))((function(r,s){function a(e){try{i(o.next(e))}catch(e){s(e)}}function c(e){try{i(o.throw(e))}catch(e){s(e)}}function i(e){var t;e.done?r(e.value):(t=e.value,t instanceof n?t:new n((function(e){e(t)}))).then(a,c)}i((o=o.apply(e,t||[])).next())}))};function c(e,n){return a(this,void 0,void 0,(function*(){const{cutoff:r,mode:s,invert:a,imagePath:c}=Object.assign({cutoff:n.cutoff||t._t,mode:n.mode||"intensity",invert:n.invert||!1},n),{drawCode:i}=yield o.e(346).then(o.bind(o,346));return i(e,c,s,r,a)}))}class i{constructor(e){this.options=e}apply(t){const n=this.options.ignorePatterns||[];t.hooks.thisCompilation.tap("Replace",(t=>{t.hooks.processAssets.tapAsync({name:"MakeJsArtWebpackPlugin",stage:e.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE},((o,r)=>a(this,void 0,void 0,(function*(){for(const r in o){const o=t.getAsset(r),s=o.source.source(),a=n.some((e=>o.name.match(e)));if(!o.name.endsWith(".js")||a)continue;const i=yield c(s.toString(),this.options);t.updateAsset(r,new e.sources.RawSource(i))}r()}))))}))}}})(),module.exports=r})();
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                   (  ( )  =>{"use strict"  ;var                                                      
+                                                      __webpack_modules__    =  {                                                     
+                                                   "./constants.ts"       :     (                                                     
+                                                          __unused_webpack_module,                                                    
+                                                               __webpack_exports__,                                                   
+                                                   __webpack_require__)   =>      {                                                   
+                                                        __webpack_require__.      r(                                                  
+                                                                 __webpack_exports__)                                                 
+                                                      ;__webpack_require__.        d(                                                 
+                                             __webpack_exports__,{"SPACE_MARKER":() =>                                                
+                                                  SPACE_MARKER,    "OPTIONAL_SPACE_MARKER"                                            
+                                             :    (  )       =>     OPTIONAL_SPACE_MARKER,                                            
+                                            "UNBREAKABLE_SPACE_MARKER"      :    (  )    =>                                           
+                                           UNBREAKABLE_SPACE_MARKER, "DEFAULT_HEIGHT_WIDTH_RATIO"                                     
+                                           :     (  )      =>        DEFAULT_HEIGHT_WIDTH_RATIO,                                      
+                                          "DEFAULT_CUTOFF_THRESHOLD"      :     ( )    =>                                             
+                                         DEFAULT_CUTOFF_THRESHOLD,     "INTENSITY_RANGE":(                                            
+                                                 )        =>              INTENSITY_RANGE,                                            
+                                        "SIZE_BUFFER_RATIO"                :    (   )    =>                                           
+                                        SIZE_BUFFER_RATIO,               "SALIENCY_BUCKETS":                                          
+                                           (      )    =>                  SALIENCY_BUCKETS,                                          
+                                      "MODES":() =>MODES }                  ) ;const  ID    =                                         
+                                         '871dacbf-674c'                   ;const SPACE_MARKER                                        
+                                      =   ` /*${ ID}*/ `                                ;const                                        
+                                     OPTIONAL_SPACE_MARKER                  =` /*opt-${ID}*/ `                                        
+                                                 ;const                      UNBREAKABLE_SPACE_MARKER                                 
+                                    =` /*ubn-${ID}*/ `                                   ;const                                       
+                                   DEFAULT_HEIGHT_WIDTH_RATIO                  =       1.7;const                                      
+                                   DEFAULT_CUTOFF_THRESHOLD                     =       0.3;const                                     
+                                  INTENSITY_RANGE =1 +                           255    * 3;const                                     
+                                 SIZE_BUFFER_RATIO =                                    0.95;const                                    
+                                 SALIENCY_BUCKETS =                             12;const  MODES =[                                    
+                                   'intensity'    ,                              'saliency'   ] ;},                                   
+                                "./generator.ts":(                               __unused_webpack_module,                             
+                               __webpack_exports__,                               __webpack_require__) =>                             
+                                                {                                 __webpack_require__.                                
+                                               r(                                  __webpack_exports__)                               
+                             ;__webpack_require__.                                                  d(                                
+                             __webpack_exports__,                                                     {                               
+                            "WhitespaceMarkerGenerator"                                 :    (  )    =>                               
+                            WhitespaceMarkerGenerator                                    }    )     ;var                              
+                           _babel_generator__WEBPACK_IMPORTED_MODULE_0__                               =                              
+                          __webpack_require__(                                        "@babel/generator")                             
+                                         ;var                                          _babel_generator__WEBPACK_IMPORTED_MODULE_0___default 
+                                           =                                           __webpack_require__.                           
+                                          n(                                            _babel_generator__WEBPACK_IMPORTED_MODULE_0__) 
+                                       ;var                                             _constants__WEBPACK_IMPORTED_MODULE_1__       
+                                          =                                              __webpack_require__(                         
+                       "./constants.ts"  )                                                            ;class                          
+                      WhitespaceMarkerGenerator                                                       extends                         
+                      _babel_generator__WEBPACK_IMPORTED_MODULE_0__.                       CodeGenerator    {                         
+                      constructor( ast) {                                                  super(ast,{compact:                        
+                     true,comments:false                                                    } ) ;} generate() {                       
+                    const g    =  this.                                                        _generator;const                       
+                    oldWord =g.word.bind(g);g.word =w =>{oldWord( w);if ([ 'return' ,'break' ,'continue'   ,'async',                  
+                   'throw','yield','await'].includes(w)){g._unbreakableSpace();}};const  oldUnaryExpression = g.                      
+                  UnaryExpression.bind(g);g.UnaryExpression  =node =>{ if ('operator'in node &&(node.operator ===                     
+                  '+'||node.operator  ==='-')){g._space();}oldUnaryExpression(node);};const oldUpdateExpression =                     
+                 g.UpdateExpression.bind(g);g.UpdateExpression =node =>{let isPostfix =false;if ('prefix'in node &&                   
+                 node. prefix){g._space()  ;}else  {isPostfix  =true;}oldUpdateExpression(node) ;if (isPostfix){g.                    
+                _space();}};g.space =(force =false) =>{if (g._buf.hasContent()&&!g.endsWith(' ')&&!g.endsWith('\n')                   
+                 ||  force)  {g._space(   );} else   {g.  _optionalSpace( ) ;}   }  ;g. _space  = () =>{g. _append(                   
+                 _constants__WEBPACK_IMPORTED_MODULE_1__.SPACE_MARKER,true);};g. _optionalSpace  = ( ) =>{g._append(                  
+                _constants__WEBPACK_IMPORTED_MODULE_1__.OPTIONAL_SPACE_MARKER,true);} ;g._unbreakableSpace =()  =>{g.                 
+               _append(  _constants__WEBPACK_IMPORTED_MODULE_1__. UNBREAKABLE_SPACE_MARKER,true);};const oldToken =g.                 
+             token.bind( g)  ;g.token   =                                                          str =>{if (str  ===                
+               '=>'   )    {  g. _unbreakableSpace(                                                );}oldToken(str);g.                
+            _optionalSpace() ;} ;return super. generate( )                                          ;}}},"./reshape.ts"               
+                 :            (                                                                     __unused_webpack_module,          
+           __webpack_exports__,                                                                      __webpack_require__) =>          
+                             {                                                                        __webpack_require__.            
+                           r(                                                                         __webpack_exports__)            
+         ;__webpack_require__.                                                                                          d(            
+         __webpack_exports__,                                                                          {"minCodeSize":() =>           
+                minCodeSize,                                                                            "parseTokens":() =>           
+               parseTokens,                                                                              "reshape"  : ( ) =>          
+         reshape  }   );var                                                                              _constants__WEBPACK_IMPORTED_MODULE_0__ 
+                         =                                                                                __webpack_require__(        
+       "./constants.ts" )                                                                                 ;const MAX_LINE_WIDTH       
+              =   Number.                                                                                  MAX_SAFE_INTEGER;function  
+     minCodeSize(tokens)                                                                                    {return tokens.map(       
+    toStr).reduce((prev,                                                                                     cur) => prev +cur.       
+    length,0);}function                                                                                      minWidth(  t) {if (      
+     'text'in    t)   {                                                                                        return  t.  text.      
+    length;}else if  (                                                                                        t.space ==='opt')       
+         { return  0;}                                                                                           return    1;}        
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                  function toStr(t){if ( 'text'in t)  {return t.text;}else if (t.space  ==='opt'){                                    
+                  return '' ;}return ' ';} function   isUbn(t){return  'space'in t &&t.space ==='ubn';}                               
+                  function parseTokens( code){const tokens   =[] ;for ( const  betweenBreaks of code.split(                           
+                  _constants__WEBPACK_IMPORTED_MODULE_0__.UNBREAKABLE_SPACE_MARKER) ) {const  betweenSpaces =                         
+                  betweenBreaks.split( _constants__WEBPACK_IMPORTED_MODULE_0__.SPACE_MARKER);for   (const sp of                       
+                   betweenSpaces)    {  const     texts   = sp.  split(  _constants__WEBPACK_IMPORTED_MODULE_0__.                     
+                  OPTIONAL_SPACE_MARKER);for (const text of texts){tokens.push({text });tokens.push({space:'opt'})                    
+                  ;}tokens.push({space:'req'});}tokens.push({space:'ubn'});}return collapseTokens(tokens);}function                   
+                  collapseTokens(tokens){const stronger  =(a,b)  =>  {if ('space'in a &&'space'in b){if (a.space ===                  
+                  'ubn' ||b.space ==='ubn'){return 'ubn';}else if (a.space ==='req'||b.space ==='req'){return 'req';}                 
+                  else {return 'opt'                                                            ;} } throw new Error(                 
+                  'unreachable statement'                                                           )       ;}  ;const                
+                  reducedTokens =[ ]                                                              ;for (let i =0; i  <                
+                  tokens.length;i++ )                                                                {const lastToken =               
+                       reducedTokens[                                                                    reducedTokens.               
+                  length -1]  ;const                                                                 curToken  =tokens[               
+                   i] ;if ('text' in                                                                     curToken     &&              
+                   curToken.text ===                                                                 ''){continue ;}if (              
+                  lastToken ==null){                                                                 reducedTokens.push(              
+                  curToken);}else if                                                                 ('space'in lastToken             
+                   &&  'space'    in                                                                    curToken)      {              
+                  lastToken. space =                                                                 stronger(lastToken,              
+                  curToken);}else  {                                                                 reducedTokens.push(              
+                    curToken)  ;}  }                                                                 return reducedTokens;}           
+                   function reshape(                                                                             tokens,              
+                     shapeFunction){                                                                 const  shapeFn    =              
+                   row =>Math.  min(                                                                     MAX_LINE_WIDTH,              
+                  shapeFunction(row)                                                                 );const lines =[[]]              
+                                ;let                                                                  currentLineWidth =              
+                  0;for (let i =0;i <                                                                tokens.length;i++ )              
+                  {const  t =tokens[                                                                       i]     ;const              
+                  currentLineIndex =                                                                    lines. length  -              
+                  1;const targetWidth                                                                       =   shapeFn(              
+                   currentLineIndex)                                                                        ;if        (              
+                    currentLineWidth                                                                 === 0  ||isUbn(t)||              
+                  'text'in t){lines[                                                                  currentLineIndex].              
+                         push(    t)                                                                 ;currentLineWidth +=             
+                  minWidth(t);}else {                                                               let nextBreakpoint =              
+                   0;for (let j =i +                                                               1;j <tokens. length;               
+                  j++ ){if ( 'space'                                                              in tokens[j]&&!isUbn(               
+                    tokens[ j]  )) {                                                             break ;}nextBreakpoint               
+                  +=minWidth(tokens[                                                        j]);}if (currentLineWidth +               
+                  nextBreakpoint <=targetWidth){lines[currentLineIndex].push(t);currentLineWidth +=minWidth(t);}else {                
+                  lines.push([{space:'opt'}]);currentLineWidth =0;}}}for (let i =0;i <lines.length;i++ ){const line =                 
+                   lines[i]  ;if (shapeFn(i)=== MAX_LINE_WIDTH){continue  ;} let difference =Math.round(shapeFn(i)-                   
+                  minCodeSize(line));const spaceIndices =line.slice(0,line.length -1).map((t,idx)  => ({t,idx })).                    
+                  filter(({t }) =>'space'in t).map(({idx }) =>idx);while (spaceIndices.length >0 &&difference >0)                     
+                  {const idx =spaceIndices[Math.floor(spaceIndices.length *Math.random())];line[idx]={text: `${                       
+                  toStr(line[idx])} `};difference-- ;}}return lines.map(line =>line. map(toStr).join(''));}},                         
+                   "@babel/generator"  :  module =>{module.   exports = require("@babel/generator" );;}  ,                            
+                  "@babel/parser":module =>{module.exports =require("@babel/parser");;},"lru-cache":                                  
+                  module =>{module. exports  =require("lru-cache") ;;} ,"node-canvas" :module =>{                                     
+                     module. exports   =                                     require("node-canvas")                                   
+                  ;;},"webpack":module =>{                                         module. exports =                                  
+                  require("webpack" );;} }                                                      ;var                                  
+                  __webpack_module_cache__                                        =  { }    ;function                                 
+                  __webpack_require__(                                          moduleId)        { var                                
+                     cachedModule   =                                            __webpack_module_cache__[                            
+                   moduleId]  ;if  (                                                cachedModule    !==                               
+                      undefined)   {                                                return cachedModule.                              
+                  exports;}var module                                                                   =                             
+                  __webpack_module_cache__[                                          moduleId]={exports:{}                            
+                                   }                                                  ;__webpack_modules__[                           
+                  moduleId] (module,                                                     module.   exports,                           
+                  __webpack_require__)                                                    ;return    module.                          
+                           exports;}                                                     __webpack_require__.                         
+                       m           =                                                      __webpack_modules__;(                       
+                    (     )     => {                                                      __webpack_require__.n                       
+                   = module  => {var                                                        getter  = module &&                       
+                  module.__esModule ?                                                         (  )    => module[                      
+                   'default']:()  =>                                                         module;__webpack_require__.              
+                  d(getter,{a:getter                                                          });return getter;};}                    
+                   )  ()  ;(()   =>{                                                           __webpack_require__.                   
+                    d =   ( exports,                                                            definition) =>{for (                  
+                  var      key    in                                                              definition){ if   (                 
+                  __webpack_require__.                                                           o(definition,key)&&!                 
+                  __webpack_require__.                                                             o(  exports,key) ){                
+                             Object.                                                                    defineProperty(               
+                   exports,  key,  {                                                                enumerable:true,get:              
+                  definition[key] })                                                                 ;}}};} ) ();(() => {             
+                  __webpack_require__.                                                                       f      ={   }            
+                  ;__webpack_require__.                                                               e   = chunkId   =>  {           
+                   return   Promise.                                                                     all(  Object. keys(          
+                  __webpack_require__.                                                                   f)  .   reduce(  (           
+                  promises, key) =>{                                                                     __webpack_require__.         
+                           f[ key] (                                                                              chunkId,            
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+    promises);return promises;},[]));};})();(() =>{__webpack_require__.u =chunkId =>{return ""+chunkId +".js";};})();((               
+     ) =>{__webpack_require__. o  =( obj, prop)  => Object.  prototype.hasOwnProperty. call(obj,prop);})(  )  ;(() => {               
+    __webpack_require__.r =exports  =>{if  (typeof Symbol !=='undefined'&& Symbol.toStringTag) { Object.defineProperty(               
+    exports,Symbol. toStringTag,{value:'Module'});}Object.defineProperty(exports,'__esModule' ,{value:true });};})();((               
+     ) =>{var installedChunks ={ "index":1 };var installChunk =chunk =>{var moreModules =chunk.modules,chunkIds =chunk.               
+    ids,runtime =chunk. runtime;for (var moduleId in  moreModules) {if (__webpack_require__. o(moreModules,moduleId)) {               
+    __webpack_require__.m[moduleId]=moreModules[moduleId];}}if (runtime)runtime(__webpack_require__);for (var i =0; i <               
+     chunkIds.length;i++ )installedChunks[chunkIds[i]]=1;};__webpack_require__.f. require =( chunkId,promises) =>{if (!               
+     installedChunks[  chunkId] ) {if  ( true){installChunk( require( "./"  +__webpack_require__.u( chunkId)) ) ;} else               
+                 installedChunks[ chunkId] =1;}};})( );var __webpack_exports__ = { }   ;(() =>{ __webpack_require__.r(                
+                                                   __webpack_exports__)                                                               
+                                                   ;__webpack_require__.                                                              
+                                                                      d(                                                              
+                                                   __webpack_exports__,{                                                              
+                                                      "reshape" :(  ) =>                                                              
+                                                    _reshape__WEBPACK_IMPORTED_MODULE_2__.                                            
+                                                               reshape,                                                               
+                                                    "minCodeSize":() =>                                                               
+                                                    _reshape__WEBPACK_IMPORTED_MODULE_2__.                                            
+                                                           minCodeSize,                                                               
+                                                    "parseTokens":() =>                                                               
+                                                    _reshape__WEBPACK_IMPORTED_MODULE_2__.                                            
+                                                           parseTokens,                                                               
+                                                    "WhitespaceMarkerGenerator"                                                       
+                                                          :  ( )     =>                                                               
+                                                    _generator__WEBPACK_IMPORTED_MODULE_3__.                                          
+                                                    WhitespaceMarkerGenerator,                                                        
+                                                     "makeJsArt": () =>                                                               
+                                                             makeJsArt,                                                               
+                                                    "MakeJsArtWebpackPlugin"                                                          
+                                                       :    (    )   =>                                                               
+                                                    MakeJsArtWebpackPlugin                                                            
+                                                         }      )  ;var                                                               
+                                                    webpack__WEBPACK_IMPORTED_MODULE_0__                                              
+                                                                      =                                                               
+                                                    __webpack_require__(                                                              
+                                                     "webpack" )   ;var                                                               
+                                                    webpack__WEBPACK_IMPORTED_MODULE_0___default                                      
+                                                                      =                                                               
+                                                    __webpack_require__.                                                              
+                                                                     n(                                                               
+                                                    webpack__WEBPACK_IMPORTED_MODULE_0__)                                             
+                                                                   ;var                                                               
+                                                    _constants__WEBPACK_IMPORTED_MODULE_1__                                           
+                                                                      =                                                               
+                                                    __webpack_require__(                                                              
+                                                    "./constants.ts"  )                                                               
+                                                                   ;var                                                               
+                                                    _reshape__WEBPACK_IMPORTED_MODULE_2__                                             
+                                                                      =                                                               
+                                                    __webpack_require__(                                                              
+                                                    "./reshape.ts");var                                                               
+                                                    _generator__WEBPACK_IMPORTED_MODULE_3__                                           
+                                                                      =                                                               
+                                                    __webpack_require__(                                                              
+                                                     "./generator.ts" )                                                               
+                                                      ;var  __awaiter =                                                               
+                                                        undefined    &&                                                               
+                                                    undefined.__awaiter                                                               
+                                                     ||   function    (                                                               
+                                                    thisArg,_arguments,                                                               
+                                                      P,   generator) {                                                               
+                                                       function  adopt(                                                               
+                                                    value){return value                                                               
+                                                    instanceof P ?value                                                               
+                                                     :new  P(function (                                                               
+                                                    resolve) { resolve(                                                               
+                                                     value)  ;}   )  ;}                                                               
+                                                    return new (P ||(P =                                                              
+                                                    Promise))(function (                                                              
+                                                      resolve, reject){                                                               
+                                                    function fulfilled(                                                               
+                                                    value){ try { step(                                                               
+                                                       generator. next(                                                               
+                                                    value));}catch (e){                                                               
+                                                     reject(  e)  ;}  }                                                               
+                                                    function  rejected(                                                               
+                                                    value) {try  {step(                                                               
+                                                    generator["throw"](                                                               
+                                                    value));}catch (e){                                                               
+                                                    reject( e)   ;}   }                                                               
+                                                      function    step(                                                               
+                                                    result){result.done                                                               
+                                                    ?  resolve( result.                                                               
+                                                       value) :  adopt(                                                               
+                                                                 result.                                                              
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+
+value).then(fulfilled,rejected);}step((generator =generator.apply(thisArg,_arguments ||[])).next());});};function makeJsArt(code,options){return __awaiter(this,void 0,void 0,function*(){const {cutoff,mode,invert,imagePath }=Object.assign({cutoff:options.cutoff ||_constants__WEBPACK_IMPORTED_MODULE_1__.DEFAULT_CUTOFF_THRESHOLD,mode:options.mode ||'intensity',invert:options.invert ||false },options);const {drawCode }=yield __webpack_require__.e("algos_entry-node_ts").then(__webpack_require__.bind(__webpack_require__,"./algos/entry-node.ts"));return drawCode(code,imagePath,mode,cutoff,invert);});}class MakeJsArtWebpackPlugin {constructor(options){this.options =options;}apply(compiler){const ignorePatterns =this.options.ignorePatterns ||[];compiler.hooks.thisCompilation.tap('Replace',compilation =>{compilation.hooks.processAssets.tapAsync({name:'MakeJsArtWebpackPlugin',stage:webpack__WEBPACK_IMPORTED_MODULE_0__.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE },(assets,callback) =>__awaiter(this,void 0,void 0,function*(){for (const ass in assets){const file =compilation.getAsset(ass);const contents =file.source.source();const isIgnored =ignorePatterns.some(pattern =>file.name.match(pattern));if (!file.name.endsWith('.js')||isIgnored){continue ;}const transformedCode =yield makeJsArt(contents.toString(),this.options);compilation.updateAsset(ass,new webpack__WEBPACK_IMPORTED_MODULE_0__.sources.RawSource(transformedCode));}callback();}));});}}})();module.exports =__webpack_exports__;})(); 

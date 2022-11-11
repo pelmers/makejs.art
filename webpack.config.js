@@ -13,8 +13,8 @@ if (useArtPlugin) {
     const artPlugin = require('./dist/index.js').MakeJsArtWebpackPlugin;
     artPlugins.push(
         new artPlugin({
-            imagePath: './src/__tests__/testlogo.png',
-            cutoff: 0.4,
+            imagePath: './artlogo.jpg',
+            cutoff: 0.8,
             invert: true,
         })
     );
@@ -58,10 +58,13 @@ const shared = {
     },
 
     devtool: 'cheap-module-source-map',
+    optimization: {
+        minimize: false,
+    },
     devServer: {},
 };
 
-const clientConfig = {
+const browserConfig = {
     ...shared,
 
     entry: {
@@ -88,8 +91,9 @@ const clientConfig = {
     ],
 };
 
-const serverConfig = {
+const nodeConfig = {
     ...shared,
+    mode: 'development',
     entry: {
         index: './index.ts',
     },
@@ -103,4 +107,4 @@ const serverConfig = {
     externals: [nodeExternals()],
 };
 
-module.exports = [clientConfig, serverConfig];
+module.exports = [browserConfig, nodeConfig];
