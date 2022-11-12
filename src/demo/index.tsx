@@ -4,15 +4,10 @@ import { AutoPlaySilentVideo } from './ui/AutoPlaySilentVideo';
 import { Configuration } from './ui/Configuration';
 import { ResultComponent } from './ui/ResultComponent';
 
-// Used for testing so I don't need to keep adding test values, publicly this is empty.
-const INITIAL_CODE_VALUE =
-    'const x = console.log.bind(console);' +
-    `
-    x('hi');
-    x(123);
-    x(456);
-`.repeat(150) +
-    `x('done');`;
+// @ts-ignore: webpack import raw file as string
+import reactSourceCode from '!raw-loader!../__tests__/fixtures/react.production.min.js';
+
+const INITIAL_CODE_VALUE = reactSourceCode;
 
 type State = {
     result?: string;
