@@ -1,34 +1,34 @@
 {
-  "version": 1,
-  "comments": [
-    {
-      "commentRange": {
-        "start": {
-          "line": 136,
-          "char": 48
-        },
-        "end": {
-          "line": 136,
-          "char": 50
+    "version": 1,
+    "comments": [
+        {
+            "commentRange": {
+                "start": {
+                    "line": 136,
+                    "char": 48
+                },
+                "end": {
+                    "line": 136,
+                    "char": 50
+                }
+            },
+            "codeRange": {
+                "start": {
+                    "line": 17,
+                    "char": 32
+                },
+                "end": {
+                    "line": 17,
+                    "char": 34
+                }
+            },
+            "codeRelativePath": "../../constants.ts",
+            "commentValue": "12",
+            "codeValue": "12",
+            "id": 0
         }
-      },
-      "codeRange": {
-        "start": {
-          "line": 17,
-          "char": 32
-        },
-        "end": {
-          "line": 17,
-          "char": 34
-        }
-      },
-      "codeRelativePath": "../../constants.ts",
-      "commentValue": "12",
-      "codeValue": "12",
-      "id": 0
+    ],
+    "configuration": {
+        "lineComment": "//"
     }
-  ],
-  "configuration": {
-    "lineComment": "//"
-  }
 }
